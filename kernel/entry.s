@@ -5,6 +5,7 @@ global _start
 
 _start:
     mov esp, 0x90000
+    ; abandon all hope, ye who enter here.
     call kmain
 
 .hang:
