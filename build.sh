@@ -24,6 +24,9 @@ i686-elf-gcc $CFLAGS -c drivers/keyboard.c -o keyboard.o
 echo "compile: drivers/tty.c"
 i686-elf-gcc $CFLAGS -c drivers/tty.c -o tty.o
 
+echo "compile: drivers/ata.c"
+i686-elf-gcc $CFLAGS -c drivers/ata.c -o ata.o
+
 echo "compile: lib/memory.c"
 i686-elf-gcc $CFLAGS -c lib/memory.c -o memory.o
 
