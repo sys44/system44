@@ -6,6 +6,7 @@ mov [BOOT_DRIVE], dl
 mov bp, 0x9000
 mov sp, bp
 call loadk
+call mmap
 call pms
 jmp $
 
@@ -22,6 +23,83 @@ printstr:
 .done:
   popa
   ret
+
+
+MMAPADDR equ 0x8000
+MMAPCOUNT equ 0x7DFE
+
+mmap:
+    push ax
+    push bx
+    push cx
+    push dx
+    push si
+    push di
+    push es
+    mov ax,  0x0000
+    mov es, ax
+    mov di, MMAPADDR
+    mov word [MMAPCOUNT], 0
+    db 0x66
+    xor ebx, ebx
+    xor si, si
+
+.le820:
+    db 0x66
+    mov eax, 0xE820
+    db 0x66
+    mov edx, 0x534D4150
+    db 0x66
+    mov ecx, 24
+    int 0x15
+    jc .int12
+    db 0x66
+    cmp eax, 0x534D4150
+    jne .int12
+    add di, cx
+    inc si
+    db 0x66
+    test ebx, ebx
+    jnz .le820
+    mov [MMAPCOUNT], si
+    pop es
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    ret
+
+.int12:
+    pop es
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    xor ax, ax
+    int 0x12
+    mov bx, ax
+    mov ax, bx
+    mov cx, 1024
+    mul cx
+    mov si, MMAPADDR
+    mov word [si+0], 0
+    mov word [si+2], 0
+    mov word [si+4], 0
+    mov word [si+6], 0
+    mov word [si+8], ax
+    mov word [si+10], dx
+    mov word [si+12], 0
+    mov word [si+14], 0
+    mov word [si+16], 1
+    mov word [si+18], 0
+    mov word [si+20], 0
+    mov word [si+22], 0
+    mov word [MMAPCOUNT], 1
+    ret
 
 disk_load:
   pusha
