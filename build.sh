@@ -33,6 +33,15 @@ i686-elf-gcc $CFLAGS -c lib/memory.c -o memory.o
 echo "compile: lib/string.c"
 i686-elf-gcc $CFLAGS -c lib/string.c -o string.o
 
+echo "compile: mm/lmm.c"
+i686-elf-gcc $CFLAGS -c mm/lmm.c -o lmm.o
+
+echo "compile: mm/pmm.c"
+i686-elf-gcc $CFLAGS -c mm/pmm.c -o pmm.o
+
+echo "compile: mm/paging.c"
+i686-elf-gcc $CFLAGS -c mm/paging.c -o paging.o
+
 echo "linking files.."
 i686-elf-ld $LDFLAGS -o kernel.elf \
     entry.o \
@@ -42,7 +51,10 @@ i686-elf-ld $LDFLAGS -o kernel.elf \
     tty.o \
     keyboard.o \
     memory.o \
-    string.o
+    string.o \
+    lmm.o \
+    pmm.o \
+    paging.o
 
 echo "objcopy: kernel.elf"
 i686-elf-objcopy -O binary kernel.elf kernel.bin
@@ -51,4 +63,4 @@ echo "creating final image.."
 cat boot.bin kernel.bin > floppy.img
 
 echo "build complete. cleaning build files.."
-rm boot.bin kernel.bin entry.o init.o shell.o vga.o keyboard.o tty.o memory.o string.o kernel.elf
+rm boot.bin kernel.bin entry.o init.o shell.o vga.o keyboard.o tty.o memory.o string.o lmm.o pmm.o paging.o kernel.elf
