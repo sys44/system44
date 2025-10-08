@@ -93,4 +93,3 @@ int ata_write_sectors(uint32_t lba, uint8_t count, const void* buffer) {
     
     return count;
 }
-
