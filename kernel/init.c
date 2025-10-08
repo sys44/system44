@@ -8,7 +8,7 @@
 
 void kmain(void) {
     eclear();
-    eprintf("<init>\n - system44 (2.06 x86_32 7/10/2025) -\n");
+    eprintf("<init>\n - system44 (2.06 x86 7/10/2025) -\n");
     eprintf("\n");
     mmp();
     pmm_init();
