@@ -2,7 +2,7 @@
 
 CC=tcc
 
-CFLAGS="-m32 -ffreestanding -nostdlib -fno-pie -fno-stack-protector -O2 -Wall -Wextra -Wno-unused-parameter"
+CFLAGS="-m32 -ffreestanding -nostdlib -fno-pie -fno-builtin -fno-stack-protector -O2 -Wall -Wextra -Wno-unused-parameter"
 LDFLAGS="-m elf_i386 -Ttext 0x10000 -e _start"
 
 echo "assemble: boot/boot.s"
@@ -29,6 +29,9 @@ $CC $CFLAGS -c drivers/tty.c -o tty.o
 echo "compile: drivers/ata.c"
 $CC $CFLAGS -c drivers/ata.c -o ata.o
 
+echo "compile: drivers/fb.c"
+$CC $CFLAGS -c drivers/fb.c -o fb.o
+
 echo "compile: lib/memory.c"
 $CC $CFLAGS -c lib/memory.c -o memory.o
 
@@ -52,6 +55,7 @@ ld $LDFLAGS -o kernel.elf \
     vga.o \
     tty.o \
     keyboard.o \
+    fb.o \
     memory.o \
     string.o \
     lmm.o \
@@ -65,4 +69,4 @@ echo "creating final image.."
 cat boot.bin kernel.bin > floppy.img
 
 echo "build complete. cleaning build files.."
-rm boot.bin kernel.bin entry.o init.o shell.o vga.o keyboard.o tty.o memory.o string.o lmm.o pmm.o paging.o kernel.elf
+rm boot.bin kernel.bin entry.o init.o shell.o vga.o keyboard.o tty.o ata.o fb.o memory.o string.o lmm.o pmm.o paging.o kernel.elf

@@ -7,6 +7,8 @@ mov bp, 0x9000
 mov sp, bp
 call loadk
 call mmap
+call gfxi
+call gfxe
 call pms
 jmp $
 
@@ -24,6 +26,31 @@ printstr:
   popa
   ret
 
+gfxi:
+    pusha
+    push es
+    xor ax, ax
+    mov es, ax
+    mov di, 0x7E00
+    mov ax, 0x4F01
+    mov cx, 0x11B
+    int 0x10
+    pop es
+    popa
+    ret
+
+gfxe:
+    pusha
+    push es
+    xor ax, ax
+    mov es, ax
+    mov di, 0x7E00
+    mov ax, 0x4F02
+    mov bx, 0x11B | 0x4000
+    int 0x10
+    pop es
+    popa
+    ret
 
 MMAPADDR equ 0x8000
 MMAPCOUNT equ 0x7DFE
