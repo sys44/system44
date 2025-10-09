@@ -1,4 +1,3 @@
-# under development
 
 # system44
 a built-from-scratch operating system for x86_64
