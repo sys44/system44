@@ -32,6 +32,9 @@ $CC $CFLAGS -c drivers/ata.c -o ata.o
 echo "compile: drivers/fb.c"
 $CC $CFLAGS -c drivers/fb.c -o fb.o
 
+echo "compile: drivers/fbcon.c"
+$CC $CFLAGS -c drivers/fbcon.c -o fbcon.o
+
 echo "compile: lib/memory.c"
 $CC $CFLAGS -c lib/memory.c -o memory.o
 
@@ -47,6 +50,9 @@ $CC $CFLAGS -c mm/pmm.c -o pmm.o
 echo "compile: mm/paging.c"
 $CC $CFLAGS -c mm/paging.c -o paging.o
 
+echo "compile: fs/kfs.c"
+$CC $CFLAGS -c fs/kfs.c -o kfs.o
+
 echo "linking files.."
 ld $LDFLAGS -o kernel.elf \
     entry.o \
@@ -55,12 +61,15 @@ ld $LDFLAGS -o kernel.elf \
     vga.o \
     tty.o \
     keyboard.o \
+    ata.o \
     fb.o \
+    fbcon.o \
     memory.o \
     string.o \
     lmm.o \
     pmm.o \
-    paging.o
+    paging.o \
+    kfs.o 
 
 echo "objcopy: kernel.elf"
 objcopy -O binary kernel.elf kernel.bin

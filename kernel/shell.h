@@ -1,8 +1,4 @@
-#ifndef SHELL_H
-#define SHELL_H
-
+#pragma once
 #include "../drivers/tty.h"
+void sh();
 
-void sh(tty_dev *td);
-
-#endif
