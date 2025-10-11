@@ -8,7 +8,7 @@
 static uint16_t cx = 0, cy = 0;
 void tty_init(u8 *vbe) {
     fb_init(vbe);
-    fb_fill(0x000000);
+    fb_fill(0x444444);
     cx = cy = 0;
 }
 void tty_putc(char c) {

@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "../lib/memory.h"
 #include "../lib/string.h"
-#define KFS_MAGIC 0x30534653
+#define KFS_MAGIC 0x3053464B
 #define KFS_MAX_FILES 8
 #define KFS_SECTOR_SIZE 512
 struct kfs_file {

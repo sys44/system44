@@ -6,9 +6,9 @@
 void kmain(unsigned char *vbe){
     kfs_mount();
     tty_init(vbe);
-    tty_puts("WAR IS PEACE\n");
-    tty_puts("FREEDOM IS SLAVERY\n");
-    tty_puts("IGNORANCE IS STRENGTH\n");
-    tty_puts("\nBIG BROTHER IS WATCHING YOU\n");
+    tty_puts("War is peace\n");
+    tty_puts("Freedom is slavery\n");
+    tty_puts("Ignorance is strength\n");
+    tty_puts("\nBig Brother is watching you\n");
     sh();
 }
