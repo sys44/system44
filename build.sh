@@ -69,7 +69,7 @@ ld $LDFLAGS -o kernel.elf \
     lmm.o \
     pmm.o \
     paging.o \
-    kfs.o 
+    kfs.o
 
 echo "objcopy: kernel.elf"
 objcopy -O binary kernel.elf kernel.bin
@@ -78,4 +78,4 @@ echo "creating final image.."
 cat boot.bin kernel.bin > floppy.img
 
 echo "build complete. cleaning build files.."
-rm boot.bin kernel.bin entry.o init.o shell.o vga.o keyboard.o tty.o ata.o fb.o memory.o string.o lmm.o pmm.o paging.o kernel.elf
+rm boot.bin kernel.bin entry.o init.o shell.o vga.o fbcon.o kfs.o keyboard.o tty.o ata.o fb.o memory.o string.o lmm.o pmm.o paging.o kernel.elf
