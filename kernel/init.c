@@ -11,6 +11,7 @@ void kmain(unsigned char *vbe){
     tty_puts("<init>\n");
     tty_puts(" - system44 (2.06 x86 12/10/2025)\n");
     mmp();
+    pmm_init();
     tty_puts("kfs: mount\n");
     kfs_mount();
     sh();

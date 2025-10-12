@@ -54,7 +54,7 @@ echo "compile: fs/kfs.c"
 $CC $CFLAGS -c fs/kfs.c -o kfs.o
 
 echo "compile: elf/elf.c"
-$CC $CFLAGS -c elf/elf.c -o elf.o
+$CC $CFLAGS -c uex/uex.c -o uex.o
 echo "linking files.."
 
 ld $LDFLAGS -o kernel.elf \
@@ -73,7 +73,7 @@ ld $LDFLAGS -o kernel.elf \
     pmm.o \
     paging.o \
     kfs.o \
-    elf.o
+    uex.o
 echo "objcopy: kernel.elf"
 objcopy -O binary kernel.elf kernel.bin
 

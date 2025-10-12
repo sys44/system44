@@ -4,7 +4,7 @@
 #include "../lib/string.h"
 #include "../lib/memory.h"
 #include "../fs/kfs.h"
-#include "../elf/elf.h"
+#include "../uex/uex.h"
 
 extern struct kfs_superblock superblock;
 
@@ -62,12 +62,16 @@ void sh(void) {
         }
         else if (buf[0] == 'e' && buf[1] == 'x' && buf[2] == 'e' && buf[3] == 'c' && buf[4] == ' ' && buf[5] != 0) {
             void* entry;
-            if (elfexec(buf + 5, &entry) == 0) {
+            if (uexExec(buf + 5, &entry) == 0) {
                 void (*prog)() = (void (*)())entry;
                 prog();
             } else {
-                tty_puts("elf format error\n");
+                tty_puts("UEX format error\n");
             }
+        }
+        else if (strcmp(buf, "checkaddr") == 0) {
+            char *data = (char*)0x300000;
+            tty_puts(data);
         }
         else if (buf[0] != 0) {
             tty_puts("?\n");

@@ -1,4 +1,4 @@
-#include "../drivers/fb.h"
+#include "fb.h"
 #include <stddef.h>
 
 typedef struct {
