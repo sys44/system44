@@ -1,14 +1,17 @@
 #include <stddef.h>
 #include "../drivers/tty.h"
 #include "../drivers/fbcon.h"
+#include "../mm/lmm.h"
+#include "../mm/pmm.h"
+#include "../mm/paging.h"
 #include "shell.h"
 #include "../fs/kfs.h"
 void kmain(unsigned char *vbe){
-    kfs_mount();
     tty_init(vbe);
-    tty_puts("War is peace\n");
-    tty_puts("Freedom is slavery\n");
-    tty_puts("Ignorance is strength\n");
-    tty_puts("\nBig Brother is watching you\n");
+    tty_puts("<init>\n");
+    tty_puts(" - system44 (2.06 x86 12/10/2025)\n");
+    mmp();
+    tty_puts("kfs: mount\n");
+    kfs_mount();
     sh();
 }

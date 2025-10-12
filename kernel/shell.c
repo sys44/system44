@@ -4,6 +4,7 @@
 #include "../lib/string.h"
 #include "../lib/memory.h"
 #include "../fs/kfs.h"
+#include "../elf/elf.h"
 
 extern struct kfs_superblock superblock;
 
@@ -11,7 +12,7 @@ void sh(void) {
     char buf[128];
     int i;
     for (;;) {
-        tty_puts("Q ");
+        tty_puts("// ");
         memset(buf, 0, sizeof(buf));
         i = 0;
         for (;;) {
@@ -19,20 +20,20 @@ void sh(void) {
             if (c == '\b') {
                 if (i > 0) {
                     i--;
-                    tty_puts("");
+                    tty_puts("\b");
                 }
             } else {
                 tty_putc(c);
                 buf[i++] = c;
                 if (c == '\n' || i >= sizeof(buf) - 1) {
                     buf[i - 1] = 0;
-                    tty_putc('\n');
                     break;
                 }
             }
         }
+
         if (strcmp(buf, "version") == 0) {
-            tty_puts("2.07 font is incomplete  cant print this\n");
+            tty_puts("v2.08 x86\n");
         }
         else if (strcmp(buf, "ls") == 0) {
             for (i = 0; i < superblock.file_count; i++) {
@@ -40,6 +41,9 @@ void sh(void) {
                 tty_puts(f->name);
                 tty_putc('\n');
             }
+        }
+        else if (strcmp(buf, "clear") == 0) {
+            tty_clear();
         }
         else if (buf[0] == 'c' && buf[1] == 'a' && buf[2] == 't' && buf[3] == ' ' && buf[4] != 0) {
             struct kfs_file* f = kfs_find(buf + 4);
@@ -54,6 +58,15 @@ void sh(void) {
                         tty_putc(data[j]);
                     tty_putc('\n');
                 }
+            }
+        }
+        else if (buf[0] == 'e' && buf[1] == 'x' && buf[2] == 'e' && buf[3] == 'c' && buf[4] == ' ' && buf[5] != 0) {
+            void* entry;
+            if (elfexec(buf + 5, &entry) == 0) {
+                void (*prog)() = (void (*)())entry;
+                prog();
+            } else {
+                tty_puts("elf format error\n");
             }
         }
         else if (buf[0] != 0) {

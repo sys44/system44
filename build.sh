@@ -53,7 +53,10 @@ $CC $CFLAGS -c mm/paging.c -o paging.o
 echo "compile: fs/kfs.c"
 $CC $CFLAGS -c fs/kfs.c -o kfs.o
 
+echo "compile: elf/elf.c"
+$CC $CFLAGS -c elf/elf.c -o elf.o
 echo "linking files.."
+
 ld $LDFLAGS -o kernel.elf \
     entry.o \
     init.o \
@@ -69,8 +72,8 @@ ld $LDFLAGS -o kernel.elf \
     lmm.o \
     pmm.o \
     paging.o \
-    kfs.o
-
+    kfs.o \
+    elf.o
 echo "objcopy: kernel.elf"
 objcopy -O binary kernel.elf kernel.bin
 
@@ -78,4 +81,4 @@ echo "creating final image.."
 cat boot.bin kernel.bin > floppy.img
 
 echo "build complete. cleaning build files.."
-rm boot.bin kernel.bin entry.o init.o shell.o vga.o fbcon.o kfs.o keyboard.o tty.o ata.o fb.o memory.o string.o lmm.o pmm.o paging.o kernel.elf
+rm *.o *.bin *.elf
