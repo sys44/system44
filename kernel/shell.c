@@ -5,7 +5,7 @@
 #include "../lib/memory.h"
 #include "../fs/kfs.h"
 #include "../uex/uex.h"
-
+#include "version.h"
 extern struct kfs_superblock superblock;
 
 void sh(void) {
@@ -33,7 +33,8 @@ void sh(void) {
         }
 
         if (strcmp(buf, "version") == 0) {
-            tty_puts("v2.08 x86\n");
+            tty_puts(infoKernelVersion);
+            tty_putc('\n');
         }
         else if (strcmp(buf, "ls") == 0) {
             for (i = 0; i < superblock.file_count; i++) {

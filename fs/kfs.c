@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "../lib/memory.h"
 #include "../lib/string.h"
+#include "../kernel/panic.h"
 #define KFS_MAGIC 0x3053464B
 #define KFS_MAX_FILES 8
 #define KFS_SECTOR_SIZE 512
@@ -18,8 +19,11 @@ struct kfs_superblock {
 struct kfs_superblock superblock;
 
 int kfs_mount() {
-    if (ata_read_sectors(0, 1, &superblock) < 0) return -1;
-    return (superblock.magic == KFS_MAGIC) ? 0 : -1;
+    if (ata_read_sectors(0, 1, &superblock) < 0)
+        panic("i have no root and i must scream. (disk read failure)");
+    if (superblock.magic != KFS_MAGIC)
+        panic("i have no root and i must scream. (invalid magic, not a KFS volume)");
+    return 0;
 }
 
 int kfs_mkfs() {

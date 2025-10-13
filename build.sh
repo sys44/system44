@@ -17,6 +17,9 @@ $CC $CFLAGS -c kernel/init.c -o init.o
 echo "compile: kernel/shell.c"
 $CC $CFLAGS -c kernel/shell.c -o shell.o
 
+echo "compile: kernel/panic.c"
+$CC $CFLAGS -c kernel/panic.c -o panic.o
+
 echo "compile: drivers/vga.c"
 $CC $CFLAGS -c drivers/vga.c -o vga.o
 
@@ -61,6 +64,7 @@ ld $LDFLAGS -o kernel.elf \
     entry.o \
     init.o \
     shell.o \
+    panic.o \
     vga.o \
     tty.o \
     keyboard.o \

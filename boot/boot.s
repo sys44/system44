@@ -175,6 +175,14 @@ gdt_descriptor:
 CODE_SEG EQU gdt_code - gdt_start
 DATA_SEG EQU gdt_data - gdt_start
 
+
+
+
+a20l:
+  in al, 0x92
+  or al, 00000010b
+  out 0x92, al
+  ret
 [bits 16]
 loadk:
   mov ax, 0x1000
@@ -187,6 +195,7 @@ loadk:
 
 [bits 16]
 pms:
+  call a20l
   cli
   lgdt [gdt_descriptor]
   mov eax, cr0
