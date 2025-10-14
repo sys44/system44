@@ -58,8 +58,11 @@ $CC $CFLAGS -c fs/kfs.c -o kfs.o
 
 echo "compile: elf/elf.c"
 $CC $CFLAGS -c uex/uex.c -o uex.o
-echo "linking files.."
 
+echo "compile: int/interrupts.c"
+$CC $CFLAGS -c int/interrupts.c -o int.o
+
+echo "linking files.."
 ld $LDFLAGS -o kernel.elf \
     entry.o \
     init.o \
@@ -77,7 +80,8 @@ ld $LDFLAGS -o kernel.elf \
     pmm.o \
     paging.o \
     kfs.o \
-    uex.o
+    uex.o \
+    int.o
 echo "objcopy: kernel.elf"
 objcopy -O binary kernel.elf kernel.bin
 
