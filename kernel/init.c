@@ -1,3 +1,7 @@
+// init.c
+/* Comments added by VeryEpicKebap
+This is the first part of the kernel ran when the kernel actually starts executing
+*/
 #include <stddef.h>
 #include "../drivers/tty.h"
 #include "../drivers/fbcon.h"
