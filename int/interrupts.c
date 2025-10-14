@@ -1,3 +1,4 @@
+/* Interrupts (comments added by VeryEpicKebap) */
 #include "../drivers/tty.h"
 #include "../kernel/panic.h"
 #include <stdint.h>
@@ -24,7 +25,7 @@ static inline uint8_t inb(uint16_t port) {
 
 static uint8_t pic_master_mask = 0xFF;
 static uint8_t pic_slave_mask  = 0xFF;
-
+/* Remap the PIC  */
 void pic_remap(uint8_t offset1, uint8_t offset2) {
     uint8_t a1 = inb(PIC1_DATA);
     uint8_t a2 = inb(PIC2_DATA);
@@ -42,6 +43,8 @@ void pic_remap(uint8_t offset1, uint8_t offset2) {
     pic_slave_mask  = a2;
 }
 
+
+/* Helpers */
 void pic_setm(uint8_t mask1, uint8_t mask2) {
     pic_master_mask = mask1;
     pic_slave_mask  = mask2;
@@ -111,6 +114,10 @@ void irq1h(void) {
     pic_eoi(1);
 }
 
+
+
+/* Critical part (I spent like 5 hours on this thing
+If you're a developer, please don't touch this part unless if necessary */
 asm(
 ".text\n"
 ".globl isr_default_stub\n"
@@ -143,6 +150,7 @@ asm(
 "  iret\n"
 );
 
+/* Finally set up interrupts */
 void int_init(void) {
     for (int i = 0; i < IDT_SIZE; ++i) setgate(i, (uint32_t)isr_default_stub);
     setgate(0x00, (uint32_t)isr0_stub);

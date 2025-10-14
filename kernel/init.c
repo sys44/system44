@@ -24,7 +24,6 @@ void tirq0(void) {
 
 
 void kmain(unsigned char *vbe){
-
     // the timestamps are there only for the "dmesg feel". they do not serve a purpose (for now atleast)  -veryepickebap
     tty_init(vbe);
     tty_puts("[ 0.0000 ] <init>\n");
