@@ -1,5 +1,15 @@
 // interrupts.c
 /* Interrupts (comments added by VeryEpicKebap) */
+
+
+/* Believe me when i say this but this actually took longer than the entire bootloader. Bootlooping, timer freezing the system etc.
+Eventually, i found a way
+Just slap a big chunk of ASM in the file and call it a day. (that also took an extra hour)
+-VeryEpicKebap
+*/
+
+
+
 #include "../drivers/tty.h"
 #include "../kernel/panic.h"
 #include <stdint.h>
