@@ -1,9 +1,13 @@
 #!/bin/sh
 
-CC=tcc
+CC=i686-elf-gcc
 
-CFLAGS="-m32 -ffreestanding -nostdlib -fno-pie -fno-builtin -fno-stack-protector -O2 -Wall -Wextra -Wno-unused-parameter"
+CFLAGS="-B/usr/lib/gcc/i686-elf/15.1.0 -m32 -ffreestanding -nostdlib -fno-pie -fno-builtin -fno-stack-protector -O2 -Wall -Wextra -Wno-unused-parameter"
 LDFLAGS="-m elf_i386 -Ttext 0x10000 -e _start"
+
+
+echo "\n\033[33mBefore you say 'But it's bootlooping?' \nThis build script isn't really 'standartized'. We develop on both BSD and Linux and that brings a problem where compilers behave differently. \nYou can adjust CC and CFLAGS in the script for your system.\033[0m \n\n"
+
 
 echo "assemble: boot/boot.s"
 nasm boot/boot.s -f bin -o boot.bin

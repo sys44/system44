@@ -14,18 +14,21 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "../int/interrupts.h"
 
 void tirq0(void) {
+    /* Reduced to 10 for faster boot */
     tty_puts("\n[ 0.0000 ] running IRQ0 (timer) test.\n");
     uint32_t last_tick = ticks;
-    while (ticks < 100) {
+    while (ticks < 10) {
         if (ticks != last_tick) {
             last_tick = ticks;
             tty_puts("*");
         }
     }
-    tty_puts("\n[ 0.0000 ] 100 ticks elapsed\n");
+    tty_puts("\n[ 0.0000 ] 10 ticks elapsed\n");
 }
 
-
+static inline void tsyscall(uint32_t num) {
+    asm volatile("int $0x80" : : "a"(num));
+}
 
 void kmain(unsigned char *vbe){
     // the timestamps are there only for the "dmesg feel". they do not serve a purpose (for now atleast)  -veryepickebap
@@ -41,7 +44,7 @@ void kmain(unsigned char *vbe){
     int_init();
     asm volatile("sti");
     tirq0();
-    tty_puts("interrupts enabled");
+    tsyscall(0);
     kfs_mount();
     tty_puts("\n[ 0.0000 ] kfs: mounted the first ATA device found\n-- end of init, dropping into temporary shell --\n");
     sh();

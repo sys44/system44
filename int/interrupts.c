@@ -18,6 +18,7 @@ extern void isr_default_stub(void);
 extern void isr0_stub(void);
 extern void irq0_stub(void);
 extern void irq1_stub(void);
+extern void syscall_stub(void);
 
 static inline void outb(uint16_t port, uint8_t val) {
     __asm__ volatile("outb %0, %1" : : "a"(val), "Nd"(port));
@@ -125,7 +126,12 @@ void irq1h(void) {
     pic_eoi(1);
 }
 
-
+void syscallh(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx) {
+    switch(eax) {
+        case 0: tty_puts("\ntest syscall\n"); break;
+        default: break;
+    }
+}
 
 /* Critical part (I spent like 5 hours on this thing
 If you're a developer, please don't touch this part unless if necessary */
@@ -159,6 +165,13 @@ asm(
 "  call irq1h\n"
 "  popa\n"
 "  iret\n"
+
+".global syscall_stub\n" /* the function that does the funny */
+"syscall_stub:\n"
+"  pusha\n"
+"  call syscallh\n"
+"  popa\n"
+"  iret\n"
 );
 
 /* Finally set up interrupts */
@@ -168,6 +181,8 @@ void int_init(void) {
     pic_remap(0x20, 0x28);
     setgate(0x20 + 0, (uint32_t)irq0_stub);
     setgate(0x20 + 1, (uint32_t)irq1_stub);
+    /* The syscall vector is 0x80 */
+    setgate(0x80, (uint32_t)syscall_stub);
     idt_ptr.limit = sizeof(idt_entry_t) * IDT_SIZE - 1;
     idt_ptr.base  = (uint32_t)&idt;
     pic_setm(0xFC, 0xFF);

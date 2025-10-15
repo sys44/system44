@@ -1,7 +1,6 @@
 #include "pmm.h"
 #include "lmm.h"
 #include <stdint.h>
-#include <string.h>
 
 #define PAGE_SIZE 4096
 #define MAX_PAGES (1024*64)
