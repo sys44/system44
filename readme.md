@@ -1,6 +1,6 @@
 
 # system44
-a built-from-scratch operating system for x86_32
+a built-from-scratch operating system for x86
 
 # ;)
 ![image](https://www.openbsd.org/images/lemote.jpg)
