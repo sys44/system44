@@ -3,4 +3,4 @@
 a built-from-scratch operating system for x86
 
 # ;)
-![image](https://www.openbsd.org/images/lemote.jpg)
+![image](https://www.openbsd.org/images/newrack.jpg)
