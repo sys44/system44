@@ -15,7 +15,12 @@ struct uexHdr {
     uint32_t flags;
 } __attribute__((packed));
 
-int uexExec(const char* name, void** entry) {
+struct uexAlloc {
+    void* base;
+    uint32_t pages;
+};
+
+int uexExec(const char* name, void** entry, struct uexAlloc* alloc) {
     struct kfs_file* f = kfs_find(name);
     if (!f) return -1;
     if (f->size < sizeof(struct uexHdr)) return -2;
@@ -29,6 +34,15 @@ int uexExec(const char* name, void** entry) {
     if (!dest) {
         dest = pmm_alloc_pages(pages);
         if (!dest) return -5;
+        if (alloc) {
+            alloc->base = dest;
+            alloc->pages = pages;
+        }
+    } else {
+        if (alloc) {
+            alloc->base = 0;
+            alloc->pages = 0;
+        }
     }
     uint32_t toCopy = hdr.fileSize;
     uint32_t copied = 0;
