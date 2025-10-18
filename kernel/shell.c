@@ -5,6 +5,7 @@
 #include "../lib/memory.h"
 #include "../fs/kfs.h"
 #include "../uex/uex.h"
+#include "../mm/pmm.h"
 #include "version.h"
 #include "log.h"
 extern struct kfs_superblock superblock;
@@ -65,9 +66,13 @@ void sh(void) {
         }
         else if (buf[0] == 'e' && buf[1] == 'x' && buf[2] == 'e' && buf[3] == 'c' && buf[4] == ' ' && buf[5] != 0) {
             void* entry;
-            if (uexExec(buf + 5, &entry) == 0) {
+            struct uexAlloc alloc;
+            if (uexExec(buf + 5, &entry, &alloc) == 0) {
                 void (*prog)() = (void (*)())entry;
                 prog();
+                if (alloc.base) {
+                    pmm_free_pages(alloc.base, alloc.pages);
+                }
             } else {
                 tty_puts("UEX format error\n");
             }

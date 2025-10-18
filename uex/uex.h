@@ -9,5 +9,10 @@ struct uexHdr {
     uint32_t memSize;
     uint32_t flags;
 } __attribute__((packed));
-int uexExec(const char* name, void** entry);
 
+struct uexAlloc {
+    void* base;
+    uint32_t pages;
+};
+
+int uexExec(const char* name, void** entry, struct uexAlloc* alloc);
