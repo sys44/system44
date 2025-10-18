@@ -13,6 +13,7 @@ Just slap a big chunk of ASM in the file and call it a day. (that also took an e
 #include "../drivers/tty.h"
 #include "../kernel/panic.h"
 #include <stdint.h>
+#include "../kernel/log.h"
 
 extern void isr_default_stub(void);
 extern void isr0_stub(void);
@@ -34,9 +35,21 @@ static inline uint8_t inb(uint16_t port) {
 #define PIC2_CMD  0xA0
 #define PIC2_DATA 0xA1
 #define PIC_EOI   0x20
-
+#define PIT_CMD   0x43
+#define PIT_CH0   0x40
+#define PIT_BASE  1193182U
 static uint8_t pic_master_mask = 0xFF;
 static uint8_t pic_slave_mask  = 0xFF;
+
+/* PIT */
+void pitsetfreq(uint32_t hz) {
+    if  (hz == 0) return;
+    uint16_t div = (uint16_t) (PIT_BASE / hz);
+    outb(PIT_CMD, 0x36);
+    outb(PIT_CH0, div & 0xFF);
+    outb(PIT_CH0, (div >> 8) & 0xFF);
+}
+
 /* Remap the PIC  */
 void pic_remap(uint8_t offset1, uint8_t offset2) {
     uint8_t a1 = inb(PIC1_DATA);
@@ -128,7 +141,7 @@ void irq1h(void) {
 
 void syscallh(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx) {
     switch(eax) {
-        case 0: tty_puts("\ntest syscall\n"); break;
+        case 0: tty_puts("test syscall\n"); break;
         default: break;
     }
 }
@@ -176,6 +189,7 @@ asm(
 
 /* Finally set up interrupts */
 void int_init(void) {
+    klog("idt: init\n");
     for (int i = 0; i < IDT_SIZE; ++i) setgate(i, (uint32_t)isr_default_stub);
     setgate(0x00, (uint32_t)isr0_stub);
     pic_remap(0x20, 0x28);

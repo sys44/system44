@@ -1,9 +1,10 @@
 # makefile
-CC = tcc
+CC = i686-elf-gcc
+GCCVER=15.1.0
 AS = nasm
 LD = ld
 OBJCOPY = objcopy
-CFLAGS = -m32 -ffreestanding -nostdlib -fno-pie -fno-builtin -fno-stack-protector -O2 -Wall -Wextra -Wno-unused-parameter
+CFLAGS = -B/usr/lib/gcc/i686-elf/15.1.0 -m32 -ffreestanding -nostdlib -fno-pie -fno-builtin -fno-stack-protector -O2 -Wall -Wextra -Wno-unused-parameter
 ASFLAGS = -f elf
 LDFLAGS = -m elf_i386 -Ttext 0x10000 -e _start
 KERNEL_DIR = kernel
@@ -33,6 +34,7 @@ OBJS = entry.o \
        kfs.o \
        uex.o \
        int.o \
+       log.o \
 
 IMAGE = floppy.img
 
@@ -56,6 +58,10 @@ shell.o: $(KERNEL_DIR)/shell.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 panic.o: $(KERNEL_DIR)/panic.c
+	@echo "compile: $<"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+log.o: $(KERNEL_DIR)/log.c
 	@echo "compile: $<"
 	@$(CC) $(CFLAGS) -c $< -o $@
 

@@ -6,9 +6,11 @@
 #include "../fs/kfs.h"
 #include "../uex/uex.h"
 #include "version.h"
+#include "log.h"
 extern struct kfs_superblock superblock;
 
 void sh(void) {
+    klog("sh: scheduler and elfs are not properly implemented yet. dropping into temporary shell.\n");
     char buf[128];
     int i;
     for (;;) {
@@ -70,12 +72,8 @@ void sh(void) {
                 tty_puts("UEX format error\n");
             }
         }
-        else if (strcmp(buf, "checkaddr") == 0) {
-            char *data = (char*)0x300000;
-            tty_puts(data);
-        }
         else if (buf[0] != 0) {
-            tty_puts("?\n");
+            tty_puts("command not found\n");
         }
     }
 }

@@ -1,5 +1,6 @@
 #include "pmm.h"
 #include "lmm.h"
+#include "../kernel/log.h"
 #include <stdint.h>
 
 #define PAGE_SIZE 4096
@@ -12,6 +13,7 @@ static inline void clrb(uint32_t b){ bitmap[b/8] &= ~(1 << (b%8)); }
 static inline uint8_t tstb(uint32_t b){ return bitmap[b/8] & (1 << (b%8)); }
 
 void pmm_init() {
+    klog("initalizing PMM\n");
     for (uint32_t i=0; i<sizeof(bitmap); i++) bitmap[i]=0xFF;
     uint16_t count = *(uint16_t*)MMAPCOUNT;
     struct e820_entry* map = (struct e820_entry*)MMAPADDR;

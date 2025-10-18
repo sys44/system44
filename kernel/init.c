@@ -12,40 +12,20 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "../fs/kfs.h"
 #include "version.h"
 #include "../int/interrupts.h"
-
-void tirq0(void) {
-    /* Reduced to 10 for faster boot */
-    tty_puts("\n[ 0.0000 ] running IRQ0 (timer) test.\n");
-    uint32_t last_tick = ticks;
-    while (ticks < 10) {
-        if (ticks != last_tick) {
-            last_tick = ticks;
-            tty_puts("*");
-        }
-    }
-    tty_puts("\n[ 0.0000 ] 10 ticks elapsed\n");
-}
-
-static inline void tsyscall(uint32_t num) {
-    asm volatile("int $0x80" : : "a"(num));
-}
+#include "log.h"
 
 void kmain(unsigned char *vbe){
-    // the timestamps are there only for the "dmesg feel". they do not serve a purpose (for now atleast)  -veryepickebap
     tty_init(vbe);
-    tty_puts("[ 0.0000 ] <init>\n");
-    tty_puts("[ 0.0000 ] reported LOADER version is ");
-    tty_puts(infoLoaderVersion);
-    tty_puts("\n[ 0.0000 ] - system44 (");
+    tty_puts("\n - system44 v");
     tty_puts(infoKernelVersion);
-    tty_puts(" x86 12/10/2025)\n");
-    mmp();
-    pmm_init();
+    tty_putc(' ');
+    tty_puts(buildDate);
+    tty_puts(") -\n");
+    pitsetfreq(1000);
     int_init();
     asm volatile("sti");
-    tirq0();
-    tsyscall(0);
+    mmp();
+    pmm_init();
     kfs_mount();
-    tty_puts("\n[ 0.0000 ] kfs: mounted the first ATA device found\n-- end of init, dropping into temporary shell --\n");
     sh();
 }
