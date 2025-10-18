@@ -139,10 +139,17 @@ void irq1h(void) {
     pic_eoi(1);
 }
 
-void syscallh(uint32_t eax, uint32_t ebx, uint32_t ecx, uint32_t edx) {
-    switch(eax) {
-        case 0: tty_puts("test syscall\n"); break;
-        default: break;
+uint32_t syscallh(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
+    switch(num) {
+        case 0: 
+            tty_puts("\ntest syscall 0\n");
+            return 0;
+        case 1:
+            tty_puts("\nsyscall with arg: ");
+            // arg1, arg2, arg3
+            return arg1; // return what we want
+        default:
+            return -1;
     }
 }
 
@@ -179,11 +186,17 @@ asm(
 "  popa\n"
 "  iret\n"
 
-".global syscall_stub\n" /* the function that does the funny */
+".global syscall_stub\n" // function for sigm 
 "syscall_stub:\n"
-"  pusha\n"
-"  call syscallh\n"
-"  popa\n"
+"  pushl %ebp\n"        // save base pointer
+"  pushl %edi\n"        // save edi
+"  pushl %esi\n"        // save esi
+"  pushl %edx\n"        // arg 3
+"  pushl %ecx\n"        // arg 2
+"  pushl %ebx\n"        // arg 1
+"  pushl %eax\n"        // syscall number
+"  call syscallh\n"     // call handler
+"  addl $28, %esp\n"    // clean up 7 pushes
 "  iret\n"
 );
 
