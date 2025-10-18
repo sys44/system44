@@ -25,7 +25,7 @@ void sh(void) {
             } else {
                 tty_putc(c);
                 buf[i++] = c;
-                if (c == '\n' || i >= sizeof(buf) - 1) {
+                if (c == '\n' || (unsigned int)i >= sizeof(buf) - 1) {
                     buf[i - 1] = 0;
                     break;
                 }
@@ -37,7 +37,7 @@ void sh(void) {
             tty_putc('\n');
         }
         else if (strcmp(buf, "ls") == 0) {
-            for (i = 0; i < superblock.file_count; i++) {
+            for (unsigned int i = 0; i < superblock.file_count; i++) {
                 struct kfs_file* f = &superblock.files[i];
                 tty_puts(f->name);
                 tty_putc('\n');
