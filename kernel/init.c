@@ -52,7 +52,6 @@ void kmain(unsigned char *vbe){
     pmm_init();
     tirq0();
     tty_puts("[ 0.0000 ] testing syscalls\n");
-    syscall0(0);  // test syscall with no args
     uint32_t ret = syscall3(1, 0x1234, 0, 0);  // test with args
     kfs_mount();
     sh();

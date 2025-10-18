@@ -19,7 +19,7 @@ C_SOURCES := $(filter-out $(EXCLUDE_SRCS),$(wildcard $(addsuffix /*.c,$(SRC_DIRS
 S_SOURCES := $(wildcard $(addsuffix /*.s,$(SRC_DIRS)))
 OBJS := $(patsubst %.c,%.o,$(C_SOURCES)) $(patsubst %.s,%.o,$(S_SOURCES))
 OBJS := $(sort $(OBJS))
-
+w
 KERNEL_OBJS := $(filter kernel/%.o,$(OBJS))
 OTHER_OBJS := $(filter-out $(KERNEL_OBJS),$(OBJS))
 LINK_OBJS := $(KERNEL_OBJS) $(OTHER_OBJS)
