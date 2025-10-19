@@ -14,6 +14,7 @@ Just slap a big chunk of ASM in the file and call it a day. (that also took an e
 #include "../kernel/panic.h"
 #include <stdint.h>
 #include "../kernel/log.h"
+#include "../drivers/keyboard.h"
 
 extern void isr_default_stub(void);
 extern void isr0_stub(void);
@@ -136,6 +137,7 @@ void irq0h(void) {
 }
 
 void irq1h(void) {
+    keyboardirqh();
     pic_eoi(1);
 }
 

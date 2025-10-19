@@ -12,14 +12,20 @@ extern struct kfs_superblock superblock;
 
 void sh(void) {
     klog("sh: scheduler and elfs are not properly implemented yet. dropping into temporary shell.\n");
+
     char buf[128];
     int i;
+
     for (;;) {
         tty_puts("// ");
         memset(buf, 0, sizeof(buf));
         i = 0;
-        for (;;) {
-            char c = get_key();
+        while (1) {
+            char c;
+            if (!get_key(&c)) {
+                asm volatile("hlt");
+                continue;
+            }
             if (c == '\b') {
                 if (i > 0) {
                     i--;
@@ -40,8 +46,8 @@ void sh(void) {
             tty_putc('\n');
         }
         else if (strcmp(buf, "ls") == 0) {
-            for (unsigned int i = 0; i < superblock.file_count; i++) {
-                struct kfs_file* f = &superblock.files[i];
+            for (unsigned int j = 0; j < superblock.file_count; j++) {
+                struct kfs_file* f = &superblock.files[j];
                 tty_puts(f->name);
                 tty_putc('\n');
             }
