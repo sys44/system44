@@ -57,3 +57,8 @@ int printf(const char *format, ...) {
     va_end(args);
     return 0;
 }
+
+int clear() {
+    tty_clear();
+    return 0;
+}

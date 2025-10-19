@@ -4,5 +4,6 @@
 int putc(char c);
 int puts(const char *s);
 int printf(const char *format, ...);
+int clear();
 
 #endif // IO_H
