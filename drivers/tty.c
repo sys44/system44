@@ -14,14 +14,13 @@ void tty_init(u8 *vbe) {
 }
 void tty_putc(char c) {
     int colour = 0xFFFFFFFF;
-    if (c == '\n') {
+    switch (c) {
+    case '\n':
         cx = 0;
         cy += CHAR_H;
         if (cy >= SCREEN_HEIGHT) cy = 0;
         return;
-    }
-
-    if (c == '\b') {
+    case '\b':
         if (cx >= CHAR_W) {
             cx -= CHAR_W;
         } else if (cy >= CHAR_H) {
@@ -29,19 +28,25 @@ void tty_putc(char c) {
             cx = SCREEN_WIDTH - CHAR_W;
         }
         return;
-    }
-
-    if (c == ' ') {
+    case '\t':
+        cx += CHAR_W * 4;
+        if (cx >= SCREEN_WIDTH) {
+            cx = 0;
+            cy += CHAR_H;
+            if (cy >= SCREEN_HEIGHT) cy = 0;
+        }
+        return;
+    case ' ':
         colour = BGC;
-    }
+    default:
+        fbcputchar(cx, cy, c, colour);
+        cx += CHAR_W;
 
-    fbcputchar(cx, cy, c, colour);
-    cx += CHAR_W;
-
-    if (cx >= SCREEN_WIDTH) {
-        cx = 0;
-        cy += CHAR_H;
-        if (cy >= SCREEN_HEIGHT) cy = 0;
+        if (cx >= SCREEN_WIDTH) {
+            cx = 0;
+            cy += CHAR_H;
+            if (cy >= SCREEN_HEIGHT) cy = 0;
+        }
     }
 }
 void tty_puts(const char *s) {

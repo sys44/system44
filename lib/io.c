@@ -1,6 +1,7 @@
 #include "../drivers/tty.h"
 #include <stdarg.h>
 #include "error.h"
+#include "string.h"
 
 int putc(char c) {
     tty_putc(c);
@@ -15,47 +16,84 @@ int puts(const char *s) {
 int printf(const char *format, ...) {
     va_list args;
     va_start(args, format);
+
+    char buffer[1024];
+    char *out = buffer;
     const char *p = format;
+
     while (*p) {
         if (*p == '%') {
             p++;
             if (*p == 's') {
                 const char *str = va_arg(args, const char *);
-                tty_puts(str);
-            } else if (*p == 'c') {
-                char c = (char)va_arg(args, int);
-                tty_putc(c);
-            } else if (*p == 'd') {
-                int num = va_arg(args, int);
-                char buf[12];
-                int i = 0;
-                if (num < 0) {
-                    tty_putc('-');
-                    num = -num;
-                }
-                if (num == 0) {
-                    tty_putc('0');
-                } else {
-                    while (num > 0) {
-                        buf[i++] = (num % 10) + '0';
-                        num /= 10;
+                while (*str) {
+                    if (*str == '\\' && *(str + 1)) {
+                        str++;
+                        switch (*str) {
+                            case 'n':  *out++ = '\n'; break;
+                            case 't':  *out++ = '\t'; break;
+                            case '\\': *out++ = '\\'; break;
+                            default:
+                                *out++ = '\\';
+                                *out++ = *str;
+                                break;
+                        }
+                    } else {
+                        *out++ = *str;
                     }
-                    for (int j = i - 1; j >= 0; j--) {
-                        tty_putc(buf[j]);
-                    }
+                    str++;
                 }
-            } else if (*p == '%') {
-                tty_putc('%');
-            } else {
-                tty_putc('%');
-                tty_putc(*p);
             }
-        } else {
-            tty_putc(*p);
+            else if (*p == 'c') {
+                *out++ = (char)va_arg(args, int);
+            }
+            else if (*p == 'd') {
+                int num = va_arg(args, int);
+                char tmp[12];
+                int len = 0;
+
+                if (num < 0) {
+                    *out++ = '-';
+                    /* handle INT_MIN safely */
+                    unsigned int u = (unsigned int)(-(num + 1)) + 1;
+                    num = (int)u;
+                }
+
+                if (num == 0) {
+                    tmp[len++] = '0';
+                } else {
+                    unsigned int u = (unsigned int)num;
+                    while (u) {
+                        tmp[len++] = (char)('0' + (u % 10));
+                        u /= 10;
+                    }
+                }
+                /* reverse into buffer */
+                for (int i = len - 1; i >= 0; i--) {
+                    *out++ = tmp[i];
+                }
+            }
+            else if (*p == '%') {
+                *out++ = '%';
+            }
+            else {
+                /* unknown specifier → literal %}
+                */
+                *out++ = '%';
+                *out++ = *p;
+            }
+        }
+        else {
+            *out++ = *p;
         }
         p++;
     }
+
+    /* terminate and write once */
+    *out = '\0';
     va_end(args);
+
+    puts(buffer);
     return ERR_SUCCESS;
 }
 

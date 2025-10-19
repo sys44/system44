@@ -9,6 +9,7 @@
 #include "../uex/uex.h"
 #include "version.h"
 #include "log.h"
+#include "../int/interrupts.h"
 
 #define CMD_COMP(name) (strcmp(strtok(chars, " "), name) == 0)
 
@@ -79,6 +80,9 @@ void sh(void) {
         }
         else if (CMD_COMP("exec")) {
             exec(chars + 5);
+        }
+        else if (CMD_COMP("printf")) {
+            printf("%s", chars + 7);
         }
         else if (CMD_COMP("help")) {
             puts("Available commands:\n"
