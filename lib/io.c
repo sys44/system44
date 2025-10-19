@@ -1,14 +1,15 @@
 #include "../drivers/tty.h"
 #include <stdarg.h>
+#include "error.h"
 
 int putc(char c) {
     tty_putc(c);
-    return c;
+    return ERR_SUCCESS;
 }
 
 int puts(const char *s) {
     tty_puts(s);
-    return 0;
+    return ERR_SUCCESS;
 }
 
 int printf(const char *format, ...) {
@@ -55,10 +56,10 @@ int printf(const char *format, ...) {
         p++;
     }
     va_end(args);
-    return 0;
+    return ERR_SUCCESS;
 }
 
 int clear() {
     tty_clear();
-    return 0;
+    return ERR_SUCCESS;
 }

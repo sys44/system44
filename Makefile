@@ -57,6 +57,6 @@ clean:
 	@rm -f $(OBJS) boot.bin kernel.bin kernel.elf $(IMAGE)
 
 run: $(IMAGE)
-	qemu-system-i386 -fda $< -hda kfs.img
+	qemu-system-i386 -fda $< -hda kfs.img > /dev/null 2>&1
 
 .PHONY: all clean run

@@ -1,6 +1,8 @@
 // ata.c ATA driver written by Comrade PS2 03/10/2025
 
 #include "ata.h"
+#include <stddef.h>
+#include "../lib/error.h"
 
 static inline uint8_t inb(uint16_t port) {
     uint8_t result;
@@ -37,7 +39,7 @@ void ata_init(void) {
 }
 
 int ata_read_sectors(uint32_t lba, uint8_t count, void* buffer) {
-    if (count == 0) return -1;
+    if (count == 0) return ERR_FAILED;
     
     ata_wait_busy();
     
@@ -55,7 +57,7 @@ int ata_read_sectors(uint32_t lba, uint8_t count, void* buffer) {
         ata_wait_drq();
         
         if (inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERR) {
-            return -1;
+            return ERR_FAILED;
         }
         
         insw(ATA_PRIMARY_DATA, buf, 256);
@@ -66,7 +68,7 @@ int ata_read_sectors(uint32_t lba, uint8_t count, void* buffer) {
 }
 
 int ata_write_sectors(uint32_t lba, uint8_t count, const void* buffer) {
-    if (count == 0) return -1;
+    if (count == 0) return ERR_FAILED;
     
     ata_wait_busy();
     
@@ -84,7 +86,7 @@ int ata_write_sectors(uint32_t lba, uint8_t count, const void* buffer) {
         ata_wait_drq();
         
         if (inb(ATA_PRIMARY_STATUS) & ATA_STATUS_ERR) {
-            return -1;
+            return ERR_FAILED;
         }
         
         outsw(ATA_PRIMARY_DATA, buf, 256);

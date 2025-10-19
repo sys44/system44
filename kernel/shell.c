@@ -9,6 +9,9 @@
 #include "../uex/uex.h"
 #include "version.h"
 #include "log.h"
+
+#define CMD_COMP(name) (strcmp(strtok(chars, " "), name) == 0)
+
 extern struct kfs_superblock superblock;
 
 void sh(void) {
@@ -42,24 +45,27 @@ void sh(void) {
             }
         }
 
-        if (strcmp(strtok(chars, " "), "version") == 0) {
+        if (CMD_COMP("version")) {
             puts(infoKernelVersion);
             putc('\n');
         }
-        else if (strcmp(strtok(chars, " "), "ls") == 0) {
+        else if (CMD_COMP("ls")) {
             for (unsigned int j = 0; j < superblock.file_count; j++) {
                 struct kfs_file* f = &superblock.files[j];
                 puts(f->name);
                 putc('\n');
             }
         }
-        else if (strcmp(strtok(chars, " "), "clear") == 0) {
+        else if (CMD_COMP("clear")) {
             clear();
         }
-        else if (strcmp(strtok(chars, " "), "cat") == 0) {
+        else if (CMD_COMP("touch")) {
+            kfs_write(chars + 6, "", 0);
+        }
+        else if (CMD_COMP("cat")) {
             struct kfs_file* f = kfs_find(chars + 4);
             if (!f) {
-                puts("kfs: not found\n");
+                printf("cat: %s: not found\n", chars + 4);
             } else {
                 uint8_t data[(f->size + 511) & ~511];
                 if (kfs_read(f->name, data) < 0) {
@@ -71,20 +77,20 @@ void sh(void) {
                 }
             }
         }
-        else if (strcmp(strtok(chars, " "), "exec") == 0) {
+        else if (CMD_COMP("exec")) {
             exec(chars + 5);
         }
-        else if (strcmp(strtok(chars, " "), "help") == 0) {
+        else if (CMD_COMP("help")) {
             puts("Available commands:\n"
-                 " version     - show kernel version\n"
-                 " ls          - list files in kfs\n"
-                 " cat <file>  - display file contents\n"
-                 " exec <file> - execute UEX file\n"
-                 " clear       - clear the screen\n"
-                 " help        - show this help message\n");
+                 " version      - show kernel version\n"
+                 " ls           - list files in kfs\n"
+                 " cat <file>   - display file contents\n"
+                 " exec <file>  - execute UEX file\n"
+                 " clear        - clear the screen\n"
+                 " help         - show this help message\n"
+                 " touch <file> - create an empty file\n");
         } else if (chars[0] != 0) {
-            puts(chars);
-            puts(": command not found\n");
+            printf("%s: command not found\n", chars);
         }
     }
 }

@@ -1,5 +1,6 @@
 #include "../uex/uex.h"
 #include "../mm/pmm.h"
+#include "error.h"
 
 int exec (const char *file) {
     void* entry;
@@ -11,9 +12,9 @@ int exec (const char *file) {
             pmm_free_pages(alloc.base, alloc.pages);
         }
     } else {
-        return 1;
+        return ERR_FORMAT;
     }
-    return 0;
+    return ERR_SUCCESS;
 }
 
 int execv (const char *file, char *const argv[]) {
@@ -26,7 +27,7 @@ int execv (const char *file, char *const argv[]) {
             pmm_free_pages(alloc.base, alloc.pages);
         }
     } else {
-        return 1;
+        return ERR_FORMAT;
     }
-    return 0;
+    return ERR_SUCCESS;
 }

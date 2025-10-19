@@ -2,6 +2,7 @@
 #include "lmm.h"
 #include "../kernel/log.h"
 #include <stdint.h>
+#include <stddef.h>
 
 #define PAGE_SIZE 4096
 #define MAX_PAGES (1024*64)
@@ -38,7 +39,7 @@ void* pmm_alloc() {
             return (void*)(i * PAGE_SIZE);
         }
     }
-    return 0;
+    return NULL;
 }
 
 void pmm_free(void* a) {
@@ -47,7 +48,7 @@ void pmm_free(void* a) {
 }
 
 void* pmm_alloc_pages(uint32_t n) {
-    if (n == 0) return 0;
+    if (n == 0) return NULL;
     for (uint32_t i = 0; i <= MAX_PAGES - n; i++) {
         uint32_t j;
         for (j = 0; j < n; j++) {
@@ -60,7 +61,7 @@ void* pmm_alloc_pages(uint32_t n) {
         }
         i += j;
     }
-    return 0;
+    return NULL;
 }
 
 void pmm_free_pages(void* a, uint32_t n) {
