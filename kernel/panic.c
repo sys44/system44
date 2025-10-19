@@ -1,3 +1,6 @@
+/* Do CPUs dream of eternal halting? */
+
+
 #include "../drivers/tty.h"
 void panic(const char *msg) {
     tty_puts("\n\npanic: ");
