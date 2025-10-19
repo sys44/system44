@@ -29,7 +29,7 @@ void sh(void) {
             if (c == '\b') {
                 if (i > 0) {
                     i--;
-                    tty_puts("\b");
+                    tty_puts("\b \b");
                 }
             } else {
                 tty_putc(c);
@@ -55,7 +55,7 @@ void sh(void) {
         else if (strcmp(buf, "clear") == 0) {
             tty_clear();
         }
-        else if (buf[0] == 'c' && buf[1] == 'a' && buf[2] == 't' && buf[3] == ' ' && buf[4] != 0) {
+        else if (strcmp(buf, "cat") == 0) {
             struct kfs_file* f = kfs_find(buf + 4);
             if (!f) {
                 tty_puts("kfs: not found\n");
@@ -70,7 +70,7 @@ void sh(void) {
                 }
             }
         }
-        else if (buf[0] == 'e' && buf[1] == 'x' && buf[2] == 'e' && buf[3] == 'c' && buf[4] == ' ' && buf[5] != 0) {
+        else if (strcmp(buf, "exec") == 0) {
             void* entry;
             struct uexAlloc alloc;
             if (uexExec(buf + 5, &entry, &alloc) == 0) {
