@@ -3,6 +3,7 @@
 #include "../drivers/keyboard.h"
 #include "../lib/string.h"
 #include "../lib/memory.h"
+#include "../lib/io.h"
 #include "../fs/kfs.h"
 #include "../uex/uex.h"
 #include "../mm/pmm.h"
@@ -13,12 +14,12 @@ extern struct kfs_superblock superblock;
 void sh(void) {
     klog("sh: scheduler and elfs are not properly implemented yet. dropping into temporary shell.\n");
 
-    char buf[128];
+    char chars[128];
     int i;
 
     for (;;) {
         tty_puts("// ");
-        memset(buf, 0, sizeof(buf));
+        memset(chars, 0, sizeof(chars));
         i = 0;
         while (1) {
             char c;
@@ -29,34 +30,34 @@ void sh(void) {
             if (c == '\b') {
                 if (i > 0) {
                     i--;
-                    tty_puts("\b");
+                    tty_puts("\b \b");
                 }
             } else {
                 tty_putc(c);
-                buf[i++] = c;
-                if (c == '\n' || (unsigned int)i >= sizeof(buf) - 1) {
-                    buf[i - 1] = 0;
+                chars[i++] = c;
+                if (c == '\n' || (unsigned int)i >= sizeof(chars) - 1) {
+                    chars[i - 1] = 0;
                     break;
                 }
             }
         }
 
-        if (strcmp(buf, "version") == 0) {
+        if (strcmp(strtok(chars, " "), "version") == 0) {
             tty_puts(infoKernelVersion);
             tty_putc('\n');
         }
-        else if (strcmp(buf, "ls") == 0) {
+        else if (strcmp(strtok(chars, " "), "ls") == 0) {
             for (unsigned int j = 0; j < superblock.file_count; j++) {
                 struct kfs_file* f = &superblock.files[j];
                 tty_puts(f->name);
                 tty_putc('\n');
             }
         }
-        else if (strcmp(buf, "clear") == 0) {
+        else if (strcmp(strtok(chars, " "), "clear") == 0) {
             tty_clear();
         }
-        else if (buf[0] == 'c' && buf[1] == 'a' && buf[2] == 't' && buf[3] == ' ' && buf[4] != 0) {
-            struct kfs_file* f = kfs_find(buf + 4);
+        else if (strcmp(strtok(chars, " "), "cat") == 0) {
+            struct kfs_file* f = kfs_find(chars + 4);
             if (!f) {
                 tty_puts("kfs: not found\n");
             } else {
@@ -70,10 +71,10 @@ void sh(void) {
                 }
             }
         }
-        else if (buf[0] == 'e' && buf[1] == 'x' && buf[2] == 'e' && buf[3] == 'c' && buf[4] == ' ' && buf[5] != 0) {
+        else if (strcmp(strtok(chars, " "), "exec") == 0) {
             void* entry;
             struct uexAlloc alloc;
-            if (uexExec(buf + 5, &entry, &alloc) == 0) {
+            if (uexExec(chars + 5, &entry, &alloc) == 0) {
                 void (*prog)() = (void (*)())entry;
                 prog();
                 if (alloc.base) {
@@ -83,8 +84,17 @@ void sh(void) {
                 tty_puts("UEX format error\n");
             }
         }
-        else if (buf[0] != 0) {
-            tty_puts("command not found\n");
+        else if (strcmp(strtok(chars, " "), "help") == 0) {
+            tty_puts("Available commands:\n");
+            tty_puts(" version - show kernel version\n");
+            tty_puts(" ls      - list files in kfs\n");
+            tty_puts(" cat <file>  - display file contents\n");
+            tty_puts(" exec <file> - execute UEX file\n");
+            tty_puts(" clear   - clear the screen\n");
+            tty_puts(" help    - show this help message\n");
+        } else if (chars[0] != 0) {
+            tty_puts(chars);
+            tty_puts(": command not found\n");
         }
     }
 }

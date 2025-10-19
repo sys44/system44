@@ -13,6 +13,7 @@ void tty_init(u8 *vbe) {
     cx = cy = 0;
 }
 void tty_putc(char c) {
+    int colour = 0xFFFFFFFF;
     if (c == '\n') {
         cx = 0;
         cy += CHAR_H;
@@ -27,11 +28,14 @@ void tty_putc(char c) {
             cy -= CHAR_H;
             cx = SCREEN_WIDTH - CHAR_W;
         }
-        fbcputchar(cx, cy, ' ', 0xFFFFFFFF);
         return;
     }
 
-    fbcputchar(cx, cy, c, 0xFFFFFFFF);
+    if (c == ' ') {
+        colour = BGC;
+    }
+
+    fbcputchar(cx, cy, c, colour);
     cx += CHAR_W;
 
     if (cx >= SCREEN_WIDTH) {
