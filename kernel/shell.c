@@ -3,6 +3,7 @@
 #include "../drivers/keyboard.h"
 #include "../lib/string.h"
 #include "../lib/memory.h"
+#include "../lib/io.h"
 #include "../fs/kfs.h"
 #include "../uex/uex.h"
 #include "../mm/pmm.h"
@@ -91,8 +92,7 @@ void sh(void) {
             tty_puts(" exec <file> - execute UEX file\n");
             tty_puts(" clear   - clear the screen\n");
             tty_puts(" help    - show this help message\n");
-        }
-        else if (chars[0] != 0) {
+        } else if (chars[0] != 0) {
             tty_puts(chars);
             tty_puts(": command not found\n");
         }
