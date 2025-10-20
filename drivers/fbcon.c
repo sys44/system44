@@ -1,4 +1,5 @@
 #include "fb.h"
+#include "fbcon.h"
 #include <stddef.h>
 
 typedef struct {
@@ -8,14 +9,18 @@ typedef struct {
 
 #include "fonts/basic8x8"
 
-static const fontentry_t *font_get(char c){
-    for(size_t i = 0; i < sizeof(ftable)/sizeof(ftable[0]); i++)
-        if(ftable[i].ch == c) return &ftable[i];
+static const fontentry_t *font_get(char c, font_t font){
+    switch(font){
+        case FONT_BASIC8X8:
+            for(size_t i = 0; i < sizeof(basic8x8)/sizeof(basic8x8[0]); i++)
+                if(basic8x8[i].ch == c) return &basic8x8[i];
+            break;
+    }
     return NULL;
 }
 
-void fbcputchar(u16 px, u16 py, char c, u32 color){
-    const fontentry_t *f = font_get(c);
+void fbcputchar(uint16_t px, uint16_t py, char c, uint32_t color, font_t font){
+    const fontentry_t *f = font_get(c, font);
     if(!f) return;
     for(u8 y = 0; y < 8; y++){
         const char *r = f->rows[y];
@@ -25,10 +30,10 @@ void fbcputchar(u16 px, u16 py, char c, u32 color){
     }
 }
 
-void fbcstr(u16 px, u16 py, const char *s, u32 color){
+void fbcstr(uint16_t x, uint16_t y, const char *s, uint32_t color, font_t font){
     while(*s){
-        fbcputchar(px, py, *s, color);
-        px += 8;
+        fbcputchar(x, y, *s, color, font);
+        x += 8;
         s++;
     }
 }

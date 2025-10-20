@@ -53,6 +53,7 @@ void kmain(unsigned char *vbe){
     tirq0();
     tty_puts("[ 0.0000 ] testing syscalls\n");
     uint32_t ret = syscall3(1, 0x1234, 0, 0);  // test with args
+    (void)ret;
     kfs_mount();
     sh();
 }

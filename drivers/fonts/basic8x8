@@ -1,4 +1,4 @@
-static const fontentry_t ftable[] = {
+static const fontentry_t basic8x8[] = {
     {'A', {"..#.....",
            ".#.#....",
            "#...#...",

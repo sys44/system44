@@ -38,8 +38,9 @@ void tty_putc(char c) {
         return;
     case ' ':
         colour = BGC;
+        __attribute__((fallthrough));
     default:
-        fbcputchar(cx, cy, c, colour);
+        fbcputchar(cx, cy, c, colour, FONT_BASIC8X8);
         cx += CHAR_W;
 
         if (cx >= SCREEN_WIDTH) {
