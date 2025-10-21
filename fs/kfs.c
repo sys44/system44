@@ -21,9 +21,7 @@ struct kfs_superblock {
     uint32_t magic;
     uint32_t file_count;
     struct kfs_file files[KFS_MAX_FILES];
-};
-
-struct kfs_superblock superblock;
+} superblock;
 
 int kfs_mount() {
     klog("kfs: mounted hd0: (kfs 1.00)\n");
