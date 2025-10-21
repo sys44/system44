@@ -161,7 +161,7 @@ uint32_t syscallh(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
             }
             return ERR_SUCCESS;
         case 1:
-            puts("\nsyscall with arg: ");
+            printf("\nsyscall with args: %d %d %d\n", arg1, arg2, arg3);
             // arg1, arg2, arg3
             return arg1; // return what we want
         default:

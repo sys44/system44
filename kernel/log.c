@@ -21,10 +21,7 @@ static void ts(void) {
     int pos = 0;
     buf[pos++] = '[';
     buf[pos++] = ' ';
-    if (sec < 10)      { buf[pos++]=' '; buf[pos++]=' '; buf[pos++]=' '; buf[pos++]=' '; }
-    else if (sec < 100){ buf[pos++]=' '; buf[pos++]=' '; buf[pos++]=' '; }
-    else if (sec < 1000){ buf[pos++]=' '; buf[pos++]=' '; }
-    else if (sec < 10000){ buf[pos++]=' '; }
+    buf[pos++] = '\t';
     pos += utoa(sec, &buf[pos]);
     buf[pos++] = '.';
     buf[pos++] = '0' + (ms / 100);
@@ -33,7 +30,7 @@ static void ts(void) {
     buf[pos++] = ']';
     buf[pos++] = ' ';
     buf[pos] = '\0';
-    tty_puts(buf);
+    printf(buf);
 }
 
 void klog(const char *msg) {
