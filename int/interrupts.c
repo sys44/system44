@@ -10,12 +10,13 @@ Just slap a big chunk of ASM in the file and call it a day. (that also took an e
 
 
 
-#include "../drivers/tty.h"
+#include "../lib/io.h"
 #include "../kernel/panic.h"
 #include <stdint.h>
 #include "../kernel/log.h"
 #include "../drivers/keyboard.h"
 #include "../lib/error.h"
+#include "../fs/kfs.h"
 
 extern void isr_default_stub(void);
 extern void isr0_stub(void);
@@ -145,10 +146,22 @@ void irq1h(void) {
 uint32_t syscallh(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
     switch(num) {
         case 0: 
-            tty_puts("\ntest syscall 0\n");
+            struct kfs_file* f = kfs_find((const char*)arg1);
+            if (!f) {
+                return ERR_NOT_FOUND;
+            } else {
+                uint8_t data[(f->size + 511) & ~511];
+                if (kfs_read(f->name, data) < 0) {
+                    return ERR_IO;
+                } else {
+                    for (uint32_t j = 0; j < f->size; j++)
+                        putc(data[j]);
+                    putc('\n');
+                }
+            }
             return ERR_SUCCESS;
         case 1:
-            tty_puts("\nsyscall with arg: ");
+            puts("\nsyscall with arg: ");
             // arg1, arg2, arg3
             return arg1; // return what we want
         default:

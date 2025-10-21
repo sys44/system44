@@ -4,6 +4,7 @@
 #include "../lib/string.h"
 #include "../lib/memory.h"
 #include "../lib/io.h"
+#include "../lib/error.h"
 #include "../lib/exec.h"
 #include "../fs/kfs.h"
 #include "../uex/uex.h"
@@ -79,7 +80,7 @@ void sh(void) {
             }
         }
         else if (CMD_COMP("exec")) {
-            exec(chars + 5);
+            exec(chars + 5) == ERR_FORMAT ? puts("exec: format error\n") : 0;
         }
         else if (CMD_COMP("printf")) {
             printf("%s", chars + 7);
