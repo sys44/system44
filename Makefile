@@ -55,8 +55,12 @@ $(IMAGE): boot.bin kernel.bin
 clean:
 	@echo "cleaning.."
 	@rm -f $(OBJS) boot.bin kernel.bin kernel.elf $(IMAGE)
+	@$(MAKE) --no-print-directory -C tests clean
 
 run: $(IMAGE)
 	qemu-system-i386 -fda $< -hda kfs.img > /dev/null 2>&1
 
-.PHONY: all clean run
+tests:
+	$(MAKE) --no-print-directory -C tests
+
+.PHONY: all clean run tests
