@@ -35,7 +35,7 @@ void sh(void) {
             if (c == '\b') {
                 if (i > 0) {
                     i--;
-                    puts("\b \b");
+                    putc('\b');
                 }
             } else {
                 putc(c);
