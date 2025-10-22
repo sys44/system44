@@ -7,7 +7,8 @@ typedef enum {
     ERR_NOT_FOUND,
     ERR_IO,
     ERR_FORMAT,
-    ERR_UNKNOWN
+    ERR_UNKNOWN,
+    ERR_OOM
 } error_t;
 
 #endif // ERROR_H
