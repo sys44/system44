@@ -20,4 +20,5 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: ${{ job.status }}
           username: 'Big Chechen'
+          content: "Big Chechen is watching"
           avatar_url: ${{ secrets.AVATAR_URL }}
