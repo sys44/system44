@@ -202,18 +202,21 @@ asm(
 "  popa\n"
 "  iret\n"
 
-".global syscall_stub\n" // function for sigm 
+".global syscall_stub\n"
 "syscall_stub:\n"
-"  pushl %ebp\n"        // save base pointer
-"  pushl %edi\n"        // save edi
-"  pushl %esi\n"        // save esi
-"  pushl %edx\n"        // arg 3
-"  pushl %ecx\n"        // arg 2
-"  pushl %ebx\n"        // arg 1
-"  pushl %eax\n"        // syscall number
-"  call syscallh\n"     // call handler
-"  addl $28, %esp\n"    // clean up 7 pushes
-"  iret\n"
+"  pushl %ebp\n"        // Save callee-saved registers
+"  pushl %edi\n"
+"  pushl %esi\n"
+"  pushl %edx\n"        // Push arg3
+"  pushl %ecx\n"        // Push arg2
+"  pushl %ebx\n"        // Push arg1
+"  pushl %eax\n"        // Push syscall number
+"  call syscallh\n"     // Call C handler, return value in EAX
+"  addl $16, %esp\n"    // Clean up 4 function arguments (4 * 4 bytes)
+"  popl %esi\n"         // Restore callee-saved registers
+"  popl %edi\n"
+"  popl %ebp\n"
+"  iret\n"              // Return to userspace with EAX = return value
 );
 
 /* Finally set up interrupts */
