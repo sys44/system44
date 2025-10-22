@@ -1,0 +1,9 @@
+name: GitHub <-> Discord Server repo updates (system44)
+run-name: PS2 is noob
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Actions Status Discord
+        uses: sarisia/actions-status-discord@v1.15.4
