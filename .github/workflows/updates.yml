@@ -1,9 +1,17 @@
 name: GitHub <-> Discord Server repo updates (system44)
 run-name: PS2 is noob
+AVATAR_URL: https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Flag_of_Chechen_Republic_of_Ichkeria_%28with_Coat_of_Arms%29.svg/2560px-Flag_of_Chechen_Republic_of_Ichkeria_%28with_Coat_of_Arms%29.svg.png
+DISCORD_WEBHOOK: https://discord.com/api/webhooks/1430582249572536511/NTlKBzRElUgMA5XtM7xzq0MKMXy51rTwK0JALZi5P473zwv-O8lyQ_cCYSSYMoNmt0Xj
 on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
       - name: Actions Status Discord
-        uses: sarisia/actions-status-discord@v1.15.4
+      - uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          username: Big Chechen
+          avatar_url: ${{ secrets.AVATAR_URL }}
+          
