@@ -1,15 +1,23 @@
-name: GitHub <-> Discord Server repo updates (system44)
-run-name: PS2 is noob
-on: [push]
+name: Discord Notification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_run:
+    workflows: ['*']
+    types: [completed]
+
 jobs:
-  Explore-GitHub-Actions:
+  notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Actions Status Discord
-      - uses: sarisia/actions-status-discord@v1
+      - name: Discord notification
+        uses: sarisia/actions-status-discord@v1
         if: always()
         with:
-          webhook: https://discord.com/api/webhooks/1430582249572536511/NTlKBzRElUgMA5XtM7xzq0MKMXy51rTwK0JALZi5P473zwv-O8lyQ_cCYSSYMoNmt0Xj
-          username: Big Chechen
-          avatar_url: https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Flag_of_Chechen_Republic_of_Ichkeria_%28with_Coat_of_Arms%29.svg/2560px-Flag_of_Chechen_Republic_of_Ichkeria_%28with_Coat_of_Arms%29.svg.png
-          
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          username: 'Big Chechen'
+          avatar_url: ${{ secrets.AVATAR_URL }}
