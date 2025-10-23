@@ -1,6 +1,6 @@
 #include "pmm.h"
 #include "lmm.h"
-#include "../kernel/log.h"
+#include "../core/log.h"
 #include <stdint.h>
 #include <stddef.h>
 

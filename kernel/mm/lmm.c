@@ -1,6 +1,6 @@
 #include "lmm.h"
 #include "../drivers/tty.h"
-#include "../kernel/log.h"
+#include "../core/log.h"
 void mmp() {
     uint16_t count = *(uint16_t*)MMAPCOUNT;
     struct e820_entry* map = (struct e820_entry*)MMAPADDR;

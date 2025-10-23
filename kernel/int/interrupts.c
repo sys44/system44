@@ -11,9 +11,9 @@ Just slap a big chunk of ASM in the file and call it a day. (that also took an e
 
 
 #include "../lib/io.h"
-#include "../kernel/panic.h"
+#include "../core/panic.h"
 #include <stdint.h>
-#include "../kernel/log.h"
+#include "../core/log.h"
 #include "../drivers/keyboard.h"
 #include "../lib/error.h"
 #include "../fs/kfs.h"

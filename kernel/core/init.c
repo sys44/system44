@@ -13,7 +13,7 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "version.h"
 #include "../int/interrupts.h"
 #include "log.h"
-
+#include "../lib/io.h"
 void tirq0(void) {
     /* Reduced to 10 for faster boot */
     klog("running IRQ0 (timer) test.\n");
@@ -26,6 +26,8 @@ void tirq0(void) {
     }
     klog("10 ticks elapsed\n");
 }
+
+
 
 static inline uint32_t syscall3(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
     uint32_t ret;

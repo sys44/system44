@@ -16,6 +16,16 @@
 
 extern struct kfs_superblock superblock;
 
+void reboot(void) {
+    klog("reboot triggered");
+    asm volatile (
+        "cli\n"
+        "mov $0xFE, %al\n"
+        "out %al, $0x64\n"
+    );
+}
+
+
 void sh(void) {
     klog("sh: scheduler and elfs are not properly implemented yet. dropping into temporary shell.\n");
 
@@ -78,6 +88,9 @@ void sh(void) {
                     putc('\n');
                 }
             }
+        }
+        else if (CMD_COMP("reboot")) {
+            reboot();
         }
         else if (CMD_COMP("exec")) {
             exec(chars + 5) == ERR_FORMAT ? puts("exec: format error\n") : 0;

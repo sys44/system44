@@ -9,11 +9,11 @@ CFLAGS   = -B/usr/lib/gcc/i686-elf/$(GCCVER) -m32 -ffreestanding -nostdlib \
 ASFLAGS  = -f elf
 LDFLAGS  = -m elf_i386 -Ttext 0x10000 -e _start
 
-SRC_DIRS = kernel drivers lib mm fs uex int
+SRC_DIRS = kernel/core kernel/drivers kernel/lib kernel/mm kernel/fs kernel/uex kernel/int
 BOOT_DIR = boot
 IMAGE    = floppy.img
 
-EXCLUDE_SRCS ?= drivers/tty_vtm.c
+EXCLUDE_SRCS ?= kernel/drivers/tty_vtm.c
 
 C_SOURCES := $(filter-out $(EXCLUDE_SRCS),$(wildcard $(addsuffix /*.c,$(SRC_DIRS))))
 S_SOURCES := $(wildcard $(addsuffix /*.s,$(SRC_DIRS)))
@@ -58,7 +58,7 @@ clean:
 	@$(MAKE) --no-print-directory -C tests clean
 
 run: $(IMAGE)
-	qemu-system-i386 -fda $< -hda kfs.img > /dev/null 2>&1
+	qemu-system-i386 -fda $< -hda rootfs/kfs.img > /dev/null 2>&1
 
 tests:
 	$(MAKE) --no-print-directory -C tests

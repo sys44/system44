@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include "../lib/memory.h"
 #include "../lib/string.h"
-#include "../kernel/panic.h"
-#include "../kernel/log.h"
+#include "../core/panic.h"
+#include "../core/log.h"
 #include "../lib/error.h"
 #include <stddef.h>
 

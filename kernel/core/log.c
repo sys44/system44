@@ -2,7 +2,7 @@
 #include "../drivers/tty.h"
 #include "../int/interrupts.h"
 #include "../lib/error.h"
-
+#include "../lib/io.h" 
 static int utoa(uint32_t v, char *buf) {
     char tmp[12];
     int i = 0;
