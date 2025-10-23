@@ -27,7 +27,26 @@ void tirq0(void) {
     klog("10 ticks elapsed\n");
 }
 
-
+void cpuident() {
+    char brand[49];
+    uint32_t *b = (uint32_t*)brand;
+    for (uint32_t i = 0; i < 3; i++) {
+        uint32_t eax, ebx, ecx, edx;
+        asm volatile(
+            "cpuid"
+            : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx)
+            : "a"(0x80000002 + i)
+        );
+        b[i*4 + 0] = eax;
+        b[i*4 + 1] = ebx;
+        b[i*4 + 2] = ecx;
+        b[i*4 + 3] = edx;
+    }
+    brand[48] = '\0';
+    klog("cpu: ");
+    tty_puts(brand);
+    tty_putc('\n');
+}
 
 static inline uint32_t syscall3(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
     uint32_t ret;
@@ -42,20 +61,17 @@ static inline uint32_t syscall3(uint32_t num, uint32_t arg1, uint32_t arg2, uint
 
 void kmain(unsigned char *vbe){
     tty_init(vbe);
-    puts("\n - system44 v");
+    klog(" - system44 v");
     puts(infoKernelVersion);
     puts(" (");
     puts(buildDate);
     puts(") -\n");
+    cpuident();
     pitsetfreq(1000);
-    int_init();
-    asm volatile("sti");
     mmp();
     pmm_init();
-    tirq0();
-    klog("testing syscalls\n");
-    uint32_t ret = syscall3(1, 0x1234, 0, 0);  // test with args
-    (void)ret;
+    int_init();
+    asm volatile("sti");
     kfs_mount();
     sh();
 }

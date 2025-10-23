@@ -30,7 +30,7 @@ static void ts(void) {
     buf[pos++] = ']';
     buf[pos++] = ' ';
     buf[pos] = '\0';
-    printf(buf);
+    tty_puts(buf);
 }
 
 void klog(const char *msg) {
