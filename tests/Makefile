@@ -23,7 +23,7 @@ all: $(SRCS)
 
 genkfs:
 	$(GENKFS)
-	mv kfs.img ../kfs.img
+	mv kfs.img ../rootfs/kfs.img
 
 clean:
 	@echo "Cleaning ../rootfs .uex files"
