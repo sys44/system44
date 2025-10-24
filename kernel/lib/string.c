@@ -1,6 +1,15 @@
 #include "string.h"
 #include <stddef.h>
 
+int atoi(char *p) {
+    int k = 0;
+    while (*p) {
+        k = (k << 3) + (k << 1) + (*p) - '0';
+        p++;
+     }
+     return k;
+}
+
 size_t strlen(const char *s) {
     size_t len = 0;
     while (*s++) len++;
