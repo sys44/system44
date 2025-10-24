@@ -95,9 +95,6 @@ void sh(void) {
         else if (CMD_COMP("exec")) {
             exec(chars + 5) == ERR_FORMAT ? puts("exec: format error\n") : 0;
         }
-        else if (CMD_COMP("printf")) {
-            printf("%s", chars + 7);
-        }
         else if (CMD_COMP("help")) {
             puts("Available commands:\n"
                  " version      - show kernel version\n"

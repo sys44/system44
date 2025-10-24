@@ -1,4 +1,4 @@
-#include "../int/interrupts.h"
+#include "time.h"
 
 void usleep(uint32_t time) {
     uint32_t init = ticks;
