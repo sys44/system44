@@ -8,7 +8,8 @@ typedef enum {
     ERR_IO,
     ERR_FORMAT,
     ERR_UNKNOWN,
-    ERR_OOM
+    ERR_OOM,
+    ERR_UNSUPPORTED
 } error_t;
 
 #endif // ERROR_H

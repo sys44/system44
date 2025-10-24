@@ -9,7 +9,7 @@ CFLAGS   = -B/usr/lib/gcc/i686-elf/$(GCCVER) -m32 -ffreestanding -nostdlib \
 ASFLAGS  = -f elf
 LDFLAGS  = -m elf_i386 -Ttext 0x10000 -e _start
 
-SRC_DIRS = kernel/core kernel/drivers kernel/lib kernel/mm kernel/fs kernel/uex kernel/int
+SRC_DIRS = kernel/core kernel/drivers kernel/lib kernel/mm kernel/fs kernel/exe kernel/int
 BOOT_DIR = boot
 IMAGE    = floppy.img
 

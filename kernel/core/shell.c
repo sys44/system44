@@ -7,7 +7,7 @@
 #include "../lib/error.h"
 #include "../lib/exec.h"
 #include "../fs/kfs.h"
-#include "../uex/uex.h"
+#include "../exe/uex.h"
 #include "version.h"
 #include "log.h"
 #include "../int/interrupts.h"
@@ -95,6 +95,10 @@ void sh(void) {
         }
         else if (CMD_COMP("exec")) {
             exec(chars + 5) == ERR_FORMAT ? puts("exec: format error\n") : 0;
+        }
+        else if (CMD_COMP("elf")) {
+            extern int elfExec(const char* name, void** entry, struct uexAlloc* out_alloc);
+            elfExec(chars + 4, NULL, NULL);
         }
         else if (CMD_COMP("help")) {
             puts("Available commands:\n"
