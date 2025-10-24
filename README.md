@@ -2,7 +2,7 @@
 
 A lightweight operating system built for simplicity and efficiency.
 
-![screenshot of system44](https://i.imgur.com/L7zPXFC.png)
+![screenshot of system44](https://i.ibb.co/GQzXGwmg/sys44.png)
 
 ## Features
 - pretty barebones for now
