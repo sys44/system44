@@ -96,10 +96,6 @@ void sh(void) {
         else if (CMD_COMP("exec")) {
             exec(chars + 5) == ERR_FORMAT ? puts("exec: format error\n") : 0;
         }
-        else if (CMD_COMP("elf")) {
-            extern int elfExec(const char* name, void** entry, struct uexAlloc* out_alloc);
-            elfExec(chars + 4, NULL, NULL);
-        }
         else if (CMD_COMP("help")) {
             puts("Available commands:\n"
                  " version      - show kernel version\n"
