@@ -1,4 +1,4 @@
-#include "../uex/uex.h"
+#include "../exe/uex.h"
 #include "../mm/pmm.h"
 #include "error.h"
 
