@@ -1,11 +1,6 @@
 #include "tty.h"
 #include "fbcon.h"
 #include "fb.h"
-#define CHAR_W 6
-#define CHAR_H 8
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 768
-#define BGC 0x0000000
 static uint16_t cx = 0, cy = 0;
 void tty_init(u8 *vbe) {
     fb_init(vbe);
@@ -44,6 +39,9 @@ void tty_putc(char c) {
             if (cy >= SCREEN_HEIGHT) cy = 0;
         }
         fbcputchar(cx, cy, '_', colour, FONT_BASIC8X8);
+        return;
+    case '\r':
+        cx = 0;
         return;
     case ' ':
         colour = BGC;

@@ -72,3 +72,12 @@ void fb_putpixel(u32 x, u32 y, u32 c){
         row[x] = (u8)(c & 0xFF);
     }
 }
+
+
+void fb_rect(u32 x1, u32 y1, u32 x2, u32 y2, u32 colour) {
+    for (int i = 0; i < x2 - x1; i++) {
+        for (int j = 0; j < y2 - y1; j++) {
+            fb_putpixel(i, j, colour);
+        }
+    }
+}
