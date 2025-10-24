@@ -11,6 +11,7 @@
 #include "version.h"
 #include "log.h"
 #include "../int/interrupts.h"
+#include "../lib/math.h"
 
 #define CMD_COMP(name) (strcmp(strtok(chars, " "), name) == 0)
 

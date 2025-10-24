@@ -73,6 +73,42 @@ int printf(const char *format, ...) {
                     *out++ = tmp[i];
                 }
             }
+            else if (*p == 'f') {
+                double num = va_arg(args, double);
+                if (num < 0) {
+                    *out++ = '-';
+                    num = -num;
+                }
+                int int_part = (int)num;
+                double frac_part = num - (double)int_part;
+
+                /* integer part */
+                char tmp[20];
+                int len = 0;
+                if (int_part == 0) {
+                    tmp[len++] = '0';
+                } else {
+                    unsigned int u = (unsigned int)int_part;
+                    while (u) {
+                        tmp[len++] = (char)('0' + (u % 10));
+                        u /= 10;
+                    }
+                }
+                for (int i = len - 1; i >= 0; i--) {
+                    *out++ = tmp[i];
+                }
+
+                /* decimal point */
+                *out++ = '.';
+
+                /* fractional part */
+                for (int i = 0; i < 6; i++) { // 6 decimal places
+                    frac_part *= 10.0;
+                    int digit = (int)frac_part;
+                    *out++ = (char)('0' + digit);
+                    frac_part -= digit;
+                }
+            }
             else if (*p == '%') {
                 *out++ = '%';
             }

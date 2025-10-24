@@ -1,4 +1,7 @@
+#include "math.h"
+
 float isqrt(float num) {
+    // https://en.wikipedia.org/wiki/Fast_inverse_square_root
     long i;
     float x, y;
 
