@@ -6,7 +6,7 @@
 static int utoa(uint32_t v, char *buf) {
     char tmp[12];
     int i = 0;
-    if (v == 0) { buf[0] = '0'; buf[1] = '\0'; return ERR_FAILED; }
+    if (v == 0) { buf[0] = '0'; buf[1] = '\0'; return 1; }
     while (v) { tmp[i++] = '0' + (v % 10); v /= 10; }
     for (int j = 0; j < i; ++j) buf[j] = tmp[i - 1 - j];
     buf[i] = '\0';

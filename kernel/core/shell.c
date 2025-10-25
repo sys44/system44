@@ -12,69 +12,12 @@
 #include "log.h"
 #include "../int/interrupts.h"
 #include "../lib/math.h"
-
+#include "panic.h"
+#include "power.h"
 #define CMD_COMP(name) (strcmp(strtok(chars, " "), name) == 0)
 #define MAX_CAT_SIZE 8192  // Max file size for cat (8KB for now)
 
 extern struct kfs_superblock superblock;
-
-static inline void outb(uint16_t port, uint8_t val) {
-    __asm__ volatile("outb %0, %1" : : "a"(val), "Nd"(port));
-}
-
-void reboot(void) {
-    klog("reboot triggered");
-    asm volatile (
-        "cli\n"
-        "mov $0xFE, %al\n"
-        "out %al, $0x64\n"
-    );
-}
-
-// NOTE: This probably won't work for the current qemu run command for testing.
-// If not, try: qemu-system-i386 -fda floppy.img -hda rootfs/kfs.img -device isa-debug-exit,iobase=0x501,iosize=0x1
-void shutdown(void) {
-    klog("shutdown triggered\n");
-    
-    // QEMU ISA debug exit 
-    outb(0x501, 0x00);  // Exit with code 0
-    
-    // Try ACPI shutdown 
-    outb(0xB004, 0x2000);  // Bochs/QEMU 
-    outb(0x604, 0x2000);   // QEMU (but newer)
-    outb(0x4004, 0x3400);  // VirtualBox
-    
-    // Try writing to ACPI PM1a control register
-    outb(0x600, 0x34);
-    outb(0xb004, 0x2000);
-    
-    // If ACPI didn't work, try APM
-    asm volatile(
-        "mov $0x5301, %%ax\n"
-        "xor %%bx, %%bx\n"
-        "int $0x15\n"
-        "jc apm_fail\n"
-        
-        "mov $0x5308, %%ax\n"
-        "mov $1, %%bx\n"
-        "mov $1, %%cx\n"
-        "int $0x15\n"
-        
-        "mov $0x5307, %%ax\n"
-        "mov $1, %%bx\n"
-        "mov $3, %%cx\n"
-        "int $0x15\n"
-        
-        "apm_fail:\n"
-        ::: "ax", "bx", "cx"
-    );
-    
-    klog("shutdown failed - halting\n");
-    asm volatile("cli");
-    for (;;) {
-        asm volatile("hlt");
-    }
-}
 
 void sh(void) {
     klog("sh: scheduler and elfs are not properly implemented yet. dropping into temporary shell.\n");
@@ -84,7 +27,7 @@ void sh(void) {
     static uint8_t cat_buffer[MAX_CAT_SIZE];  // Static buffer to avoid stack overflow
 
     for (;;) {
-        puts("// ");
+        puts("> ");
         memset(chars, 0, sizeof(chars));
         i = 0;
         while (1) {

@@ -66,12 +66,12 @@ void kmain(unsigned char *vbe){
     puts(" (");
     puts(buildDate);
     puts(") -\n");
-    cpuident();
     pitsetfreq(1000);
-    mmp();
-    pmm_init();
     int_init();
     asm volatile("sti");
+    cpuident();
+    mmp();
+    pmm_init();
     kfs_mount();
     sh();
 }
