@@ -57,6 +57,8 @@ clean:
 	@rm -f $(OBJS) boot.bin kernel.bin kernel.elf $(IMAGE)
 	@$(MAKE) --no-print-directory -C tests clean
 
+# If the shutdown command doesn't work, change this to "qemu-system-i386 -fda $< -hda rootfs/kfs.img -device isa-debug-exit,iobase=0x501,iosize=0x1"
+# This same message is also in core/shell.c
 run: $(IMAGE)
 	qemu-system-i386 -fda $< -hda rootfs/kfs.img > /dev/null 2>&1
 
