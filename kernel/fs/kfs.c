@@ -26,6 +26,8 @@ struct kfs_superblock {
 int kfs_mount() {
     klog("kfs: mounted hd0: (kfs 1.00)\n");
     if (ata_read_sectors(0, 1, &superblock) < 0)
+        // "She system44 on my kernel till I panic"
+        // - triplefault
         panic("i have no root and i must scream. (disk read failure)");
     if (superblock.magic != KFS_MAGIC)
         panic("i have no root and i must scream. (invalid magic, not a KFS volume)");
