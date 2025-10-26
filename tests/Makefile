@@ -22,6 +22,7 @@ all: $(SRCS)
 	@$(MAKE) genkfs
 
 genkfs:
+	cp bg.bmp ../rootfs
 	$(GENKFS)
 	mv kfs.img ../rootfs/kfs.img
 
