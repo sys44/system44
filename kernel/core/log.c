@@ -17,8 +17,9 @@ static void ts(void) {
     uint32_t t = ticks;
     uint32_t sec = t / 1000;
     uint32_t ms  = t % 1000;
-    char buf[32];
+    char buf[33];
     int pos = 0;
+    buf[pos++] = ' ';
     buf[pos++] = '[';
     buf[pos++] = ' ';
     buf[pos++] = '\t';

@@ -14,6 +14,7 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "../int/interrupts.h"
 #include "log.h"
 #include "../lib/io.h"
+#include "hwi.h"
 void tirq0(void) {
     /* Reduced to 10 for faster boot */
     klog("running IRQ0 (timer) test.\n");
@@ -27,26 +28,6 @@ void tirq0(void) {
     klog("10 ticks elapsed\n");
 }
 
-void cpuident() {
-    char brand[49];
-    uint32_t *b = (uint32_t*)brand;
-    for (uint32_t i = 0; i < 3; i++) {
-        uint32_t eax, ebx, ecx, edx;
-        asm volatile(
-            "cpuid"
-            : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx)
-            : "a"(0x80000002 + i)
-        );
-        b[i*4 + 0] = eax;
-        b[i*4 + 1] = ebx;
-        b[i*4 + 2] = ecx;
-        b[i*4 + 3] = edx;
-    }
-    brand[48] = '\0';
-    klog("cpu: ");
-    tty_puts(brand);
-    tty_putc('\n');
-}
 
 static inline uint32_t syscall3(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
     uint32_t ret;
@@ -61,6 +42,7 @@ static inline uint32_t syscall3(uint32_t num, uint32_t arg1, uint32_t arg2, uint
 
 void kmain(unsigned char *vbe){
     tty_init(vbe);
+    tty_putc('\n');
     klog(" - system44 v");
     puts(infoKernelVersion);
     puts(" (");
@@ -69,9 +51,17 @@ void kmain(unsigned char *vbe){
     pitsetfreq(1000);
     int_init();
     asm volatile("sti");
+    klog("cpu: ");
     cpuident();
     mmp();
     pmm_init();
     kfs_mount();
+    fbcstr(190,240,"STATUS UPDATE", 0xFFFFFFF, FONT_BASIC8X8);
+    fbcstr(190,260,"MACHINE ID:         V1", 0xFFFFFF, FONT_BASIC8X8);
+    fbcstr(190,270,"LOCATION:           APPROACHING HELL", 0xFFFFFF, FONT_BASIC8X8);
+    fbcstr(190,280,"CURRENT OBJECTIVE:  FIND A WEAPON", 0xFFFFFF, FONT_BASIC8X8);
+    fbcstr(190,300,"MANKIND IS DEAD", 0xFF0000, FONT_BASIC8X8);
+    fbcstr(190,310,"BLOOD IS FUEL", 0xFF0000, FONT_BASIC8X8);
+    fbcstr(190,320,"HELL IS FULL", 0xFF0000, FONT_BASIC8X8);
     sh();
 }

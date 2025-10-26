@@ -10,17 +10,17 @@ void tty_init(u8 *vbe) {
 
 void tty_putc(char c) {
     int colour = 0xFFFFFFFF;
-    fbcputchar(cx, cy, ' ', BGC, FONT_BASIC8X8);
+    fbcputchar(cx, cy, '\b', BGC, FONT_BASIC8X8);
     fbcputchar(cx+CHAR_W, cy, '_', colour, FONT_BASIC8X8);
     switch (c) {
     case '\n':
-        fbcputchar(cx+CHAR_W, cy, ' ', BGC, FONT_BASIC8X8);
+        fbcputchar(cx+CHAR_W, cy, '\b', BGC, FONT_BASIC8X8);
         cx = 0;
         cy += CHAR_H;
         if (cy >= SCREEN_HEIGHT) cy = 0;
         return;
     case '\b':
-        fbcputchar(cx+CHAR_W, cy, ' ', BGC, FONT_BASIC8X8);
+        fbcputchar(cx+CHAR_W, cy, '\b', BGC, FONT_BASIC8X8);
         if (cx >= CHAR_W) {
             cx -= CHAR_W;
         } else if (cy >= CHAR_H) {
