@@ -1,3 +1,6 @@
+
+
+
 // init.c
 /* Comments added by VeryEpicKebap
 This is the first part of the kernel ran when the kernel actually starts executing
@@ -5,6 +8,7 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include <stddef.h>
 #include "../drivers/tty.h"
 #include "../drivers/fbcon.h"
+#include "../drivers/fb.h"
 #include "../mm/lmm.h"
 #include "../mm/pmm.h"
 #include "../mm/paging.h"
@@ -15,6 +19,7 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "log.h"
 #include "../lib/io.h"
 #include "hwi.h"
+#include "../lib/time.h"
 void tirq0(void) {
     /* Reduced to 10 for faster boot */
     klog("running IRQ0 (timer) test.\n");
@@ -55,13 +60,12 @@ void kmain(unsigned char *vbe){
     cpuident();
     mmp();
     pmm_init();
+    sleep(1);
+    tty_clear();
     kfs_mount();
-    fbcstr(190,240,"STATUS UPDATE", 0xFFFFFFF, FONT_BASIC8X8);
-    fbcstr(190,260,"MACHINE ID:         V1", 0xFFFFFF, FONT_BASIC8X8);
-    fbcstr(190,270,"LOCATION:           APPROACHING HELL", 0xFFFFFF, FONT_BASIC8X8);
-    fbcstr(190,280,"CURRENT OBJECTIVE:  FIND A WEAPON", 0xFFFFFF, FONT_BASIC8X8);
-    fbcstr(190,300,"MANKIND IS DEAD", 0xFF0000, FONT_BASIC8X8);
-    fbcstr(190,310,"BLOOD IS FUEL", 0xFF0000, FONT_BASIC8X8);
-    fbcstr(190,320,"HELL IS FULL", 0xFF0000, FONT_BASIC8X8);
+    fblogo("bg.bmp", 0, 0);
+    fbcstr(450, 300, "Welcome to System44", 0x000000, FONT_BASIC8X8);
+    fbcstr(451, 301, "Welcome to System44", 0xFFFFFF, FONT_BASIC8X8);
     sh();
+
 }
