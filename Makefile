@@ -9,7 +9,7 @@ CFLAGS   = -B/usr/lib/gcc/i686-elf/$(GCCVER) -m32 -ffreestanding -nostdlib \
 ASFLAGS  = -f elf
 LDFLAGS  = -m elf_i386 -Ttext 0x10000 -e _start
 
-SRC_DIRS = kernel/core kernel/drivers kernel/lib kernel/mm kernel/fs kernel/exe kernel/int
+SRC_DIRS = kernel/core kernel/drivers kernel/lib kernel/mm kernel/fs kernel/exe kernel/int kernel/arch/x86
 BOOT_DIR = boot
 IMAGE    = floppy.img
 
@@ -57,6 +57,8 @@ clean:
 	@rm -f $(OBJS) boot.bin kernel.bin kernel.elf $(IMAGE)
 	@$(MAKE) --no-print-directory -C tests clean
 
+# If the shutdown command doesn't work, change this to "qemu-system-i386 -fda $< -hda rootfs/kfs.img -device isa-debug-exit,iobase=0x501,iosize=0x1"
+# This same message is also in core/shell.c
 run: $(IMAGE)
 	qemu-system-i386 -fda $< -hda rootfs/kfs.img > /dev/null 2>&1
 

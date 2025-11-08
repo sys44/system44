@@ -221,7 +221,6 @@ asm(
 
 /* Finally set up interrupts */
 void int_init(void) {
-    klog("idt: init\n");
     for (int i = 0; i < IDT_SIZE; ++i) setgate(i, (uint32_t)isr_default_stub);
     setgate(0x00, (uint32_t)isr0_stub);
     pic_remap(0x20, 0x28);

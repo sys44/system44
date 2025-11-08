@@ -33,7 +33,7 @@ gfxi:
     mov es, ax
     mov di, 0x7E00
     mov ax, 0x4F01
-    mov cx, 0x11B
+    mov cx, 0x118
     int 0x10
     pop es
     popa
@@ -46,7 +46,7 @@ gfxe:
     mov es, ax
     mov di, 0x7E00
     mov ax, 0x4F02
-    mov bx, 0x11B | 0x4000
+    mov bx, 0x118 | 0x4000
     int 0x10
     pop es
     popa

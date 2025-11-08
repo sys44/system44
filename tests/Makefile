@@ -1,5 +1,5 @@
 CC := i686-elf-gcc
-CFLAGS := -m32 -nostdlib -ffreestanding
+CFLAGS := -B/usr/lib/gcc/i686-elf/15.1.0 -m32 -nostdlib -ffreestanding
 LDFLAGS := -Wl,-Ttext,0x200000,--oformat=binary
 PACK := ../scripts/pack_uex.py
 GENKFS := ../scripts/genkfs.py
@@ -22,6 +22,7 @@ all: $(SRCS)
 	@$(MAKE) genkfs
 
 genkfs:
+	cp bg.bmp ../rootfs
 	$(GENKFS)
 	mv kfs.img ../rootfs/kfs.img
 

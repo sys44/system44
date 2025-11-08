@@ -1,3 +1,6 @@
+
+
+
 // init.c
 /* Comments added by VeryEpicKebap
 This is the first part of the kernel ran when the kernel actually starts executing
@@ -5,6 +8,7 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include <stddef.h>
 #include "../drivers/tty.h"
 #include "../drivers/fbcon.h"
+#include "../drivers/fb.h"
 #include "../mm/lmm.h"
 #include "../mm/pmm.h"
 #include "../mm/paging.h"
@@ -14,6 +18,8 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "../int/interrupts.h"
 #include "log.h"
 #include "../lib/io.h"
+#include "hwi.h"
+#include "../lib/time.h"
 void tirq0(void) {
     /* Reduced to 10 for faster boot */
     klog("running IRQ0 (timer) test.\n");
@@ -27,26 +33,6 @@ void tirq0(void) {
     klog("10 ticks elapsed\n");
 }
 
-void cpuident() {
-    char brand[49];
-    uint32_t *b = (uint32_t*)brand;
-    for (uint32_t i = 0; i < 3; i++) {
-        uint32_t eax, ebx, ecx, edx;
-        asm volatile(
-            "cpuid"
-            : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx)
-            : "a"(0x80000002 + i)
-        );
-        b[i*4 + 0] = eax;
-        b[i*4 + 1] = ebx;
-        b[i*4 + 2] = ecx;
-        b[i*4 + 3] = edx;
-    }
-    brand[48] = '\0';
-    klog("cpu: ");
-    tty_puts(brand);
-    tty_putc('\n');
-}
 
 static inline uint32_t syscall3(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
     uint32_t ret;
@@ -61,17 +47,25 @@ static inline uint32_t syscall3(uint32_t num, uint32_t arg1, uint32_t arg2, uint
 
 void kmain(unsigned char *vbe){
     tty_init(vbe);
+    tty_putc('\n');
     klog(" - system44 v");
     puts(infoKernelVersion);
     puts(" (");
     puts(buildDate);
     puts(") -\n");
-    cpuident();
     pitsetfreq(1000);
-    mmp();
-    pmm_init();
     int_init();
     asm volatile("sti");
+    klog("cpu: ");
+    cpuident();
+    mmp();
+    pmm_init();
+    sleep(1);
+    tty_clear();
     kfs_mount();
+    fblogo("bg.bmp", 0, 0);
+    fbcstr(450, 300, "Welcome to System44", 0x000000, FONT_BASIC8X8);
+    fbcstr(451, 301, "Welcome to System44", 0xFFFFFF, FONT_BASIC8X8);
     sh();
+
 }

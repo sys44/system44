@@ -4,9 +4,6 @@ A lightweight operating system built for simplicity and efficiency.
 
 ![screenshot of system44](https://i.ibb.co/GQzXGwmg/sys44.png)
 
-## Features
-- pretty barebones for now
-- kernelspace works on going
 
 ## Contributors 
 [<img src="https://github.com/VeryEpicKebap.png" width="60px;">](https://github.com/VeryEpicKebap)
