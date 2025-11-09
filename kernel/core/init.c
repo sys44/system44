@@ -18,6 +18,9 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "../lib/io.h"
 #include "hwi.h"
 #include "../lib/time.h"
+#include "../fs/vfs.h"
+
+
 void tirq0(void) {
     /* Reduced to 10 for faster boot */
     klog("running IRQ0 (timer) test.\n");
@@ -64,22 +67,16 @@ void kmain(unsigned char *vbe){
 
     for (size_t i = 0; i < 1024; i++) {
         if (pcis[i].pci.vendor != NULL) {
-            printf("PCI %d detected with data:\n"
-                "  bus: %d dev: %d func: %d\n"
+            klog("PCI ");
+            printf("device %d "
+                "  bus: %d dev: %d func: %d "
                 "  vendor: %x device: %x\n",
                 i, pcis[i].bus, pcis[i].dev, pcis[i].func, pcis[i].pci.vendor, pcis[i].pci.device);
         }
     }
-    
-    sleep(1);
-    tty_clear();
+    file_t *f = vfs_l_open("/dev/tty");
+    vfs_l_write(f,"\n\nVFS Write test (to /dev/tty\nActually, /dev/tty doesn't exist. It's just a value open() checks for.\n\n", 128);
     kfs_mount();
-    fblogo("bg.bmp", 0, 0);
-    fbcstr(450, 300, "Welcome to System44", 0x000000, FONT_BASIC8X8);
-    fbcstr(451, 301, "Welcome to System44", 0xFFFFFF, FONT_BASIC8X8);
-
-
-
     sh();
 
 }
