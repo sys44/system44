@@ -70,19 +70,19 @@ int pciProbeDevice(uint8_t bus, uint8_t dev, uint8_t func, pci_Device* out) {
     return 0;
 }
 
-void pciEnumerate(struct pci_Out* out[]) {
+void pciEnumerate(struct pci_Out out[]) {
     pci_Device device;
-    uint8_t bus = 0, dev, out_pos = 0;
+    uint8_t bus = 0;
+    size_t out_pos = 0;
 
-    for (dev = 0; dev < 32; dev++) {
-        pciProbeDevice(bus, dev, 0, &device);
-        if (device.vendor == 0xFFFF) continue;
-        
-        *out[out_pos++] = (struct pci_Out){ .pci = device, .bus = bus, .dev = dev, .func = 0};
+    for (uint8_t dev = 0; dev < 32; dev++) {
+        if (pciProbeDevice(bus, dev, 0, &device) != 0) continue;
+        out[out_pos++] = (struct pci_Out){ .pci = device, .bus = bus, .dev = dev, .func = 0 };
+
         if ((device.header_type & 0x80) != 0) {
-            for (int i = 1; i < 7; i++) {
-                pciProbeDevice(bus, dev, i, &device);
-                *out[out_pos++] = (struct pci_Out){ .pci = device, .bus = bus, .dev = dev, .func = i};
+            for (uint8_t f = 1; f <= 7; f++) {
+                if (pciProbeDevice(bus, dev, f, &device) != 0) continue;
+                out[out_pos++] = (struct pci_Out){ .pci = device, .bus = bus, .dev = dev, .func = f };
             }
         }
     }

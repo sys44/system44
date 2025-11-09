@@ -1,6 +1,3 @@
-
-
-
 // init.c
 /* Comments added by VeryEpicKebap
 This is the first part of the kernel ran when the kernel actually starts executing
@@ -9,6 +6,7 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "../drivers/tty.h"
 #include "../drivers/fbcon.h"
 #include "../drivers/fb.h"
+#include "../drivers/pci.h"
 #include "../mm/lmm.h"
 #include "../mm/pmm.h"
 #include "../mm/paging.h"
@@ -60,12 +58,28 @@ void kmain(unsigned char *vbe){
     cpuident();
     mmp();
     pmm_init();
+
+    struct pci_Out pcis[1024];
+    pciEnumerate(pcis);
+
+    for (size_t i = 0; i < 1024; i++) {
+        if (pcis[i].pci.vendor != NULL) {
+            printf("PCI %d detected with data:\n"
+                "  bus: %d dev: %d func: %d\n"
+                "  vendor: %x device: %x\n",
+                i, pcis[i].bus, pcis[i].dev, pcis[i].func, pcis[i].pci.vendor, pcis[i].pci.device);
+        }
+    }
+    
     sleep(1);
     tty_clear();
     kfs_mount();
     fblogo("bg.bmp", 0, 0);
     fbcstr(450, 300, "Welcome to System44", 0x000000, FONT_BASIC8X8);
     fbcstr(451, 301, "Welcome to System44", 0xFFFFFF, FONT_BASIC8X8);
+
+
+
     sh();
 
 }

@@ -108,6 +108,28 @@ int printf(const char *format, ...) {
                     *out++ = (char)('0' + digit);
                     frac_part -= digit;
                 }
+            } else if (*p == 'x') {
+                unsigned int num = va_arg(args, unsigned int);
+                char tmp[9];
+                int len = 0;
+
+                if (num == 0) {
+                    tmp[len++] = '0';
+                } else {
+                    while (num) {
+                        int digit = num & 0xF;
+                        if (digit < 10) {
+                            tmp[len++] = (char)('0' + digit);
+                        } else {
+                            tmp[len++] = (char)('a' + (digit - 10));
+                        }
+                        num >>= 4;
+                    }
+                }
+                /* reverse into buffer */
+                for (int i = len - 1; i >= 0; i--) {
+                    *out++ = tmp[i];
+                }
             }
             else if (*p == '%') {
                 *out++ = '%';

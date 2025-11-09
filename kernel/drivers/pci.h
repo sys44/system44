@@ -13,4 +13,4 @@ struct pci_Out {
     uint8_t bus, dev, func;
 };
 
-void pciEnumerate(struct pci_Out* out[]);
+void pciEnumerate(struct pci_Out out[]);
