@@ -9,15 +9,12 @@ Just slap a big chunk of ASM in the file and call it a day. (that also took an e
 */
 
 
-
-#include "../lib/io.h"
-#include "../core/panic.h"
 #include <stdint.h>
-#include "../core/log.h"
 #include "../drivers/keyboard.h"
 #include "../lib/error.h"
-#include "../fs/kfs.h"
-
+#include "../fs/vfs.h"
+#include "../core/panic.h"
+#include "../drivers/tty.h"
 extern void isr_default_stub(void);
 extern void isr0_stub(void);
 extern void irq0_stub(void);
@@ -54,7 +51,7 @@ void pitsetfreq(uint32_t hz) {
 }
 
 /* Remap the PIC  */
-void pic_remap(uint8_t offset1, uint8_t offset2) {
+static void pic_remap(uint8_t offset1, uint8_t offset2) {
     uint8_t a1 = inb(PIC1_DATA);
     uint8_t a2 = inb(PIC2_DATA);
     outb(PIC1_CMD, 0x11);
@@ -115,7 +112,7 @@ static idt_ptr_t idt_ptr;
 
 volatile uint32_t ticks = 0;
 
-static void setgate(uint8_t n, uint32_t handler) {
+static inline void setgate(uint8_t n, uint32_t handler) {
     idt[n].offset_low  = handler & 0xFFFF;
     idt[n].selector    = 0x08;
     idt[n].zero        = 0;
@@ -145,25 +142,10 @@ void irq1h(void) {
 
 uint32_t syscallh(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
     switch(num) {
-        case 0: 
-            struct kfs_file* f = kfs_find((const char*)arg1);
-            if (!f) {
-                return ERR_NOT_FOUND;
-            } else {
-                uint8_t data[(f->size + 511) & ~511];
-                if (kfs_read(f->name, data) < 0) {
-                    return ERR_IO;
-                } else {
-                    for (uint32_t j = 0; j < f->size; j++)
-                        putc(data[j]);
-                    putc('\n');
-                }
-            }
-            return ERR_SUCCESS;
+        case 0:
+            tty_puts("syscall 0 (just a test)");
         case 1:
-            printf("\nsyscall with args: %d %d %d\n", arg1, arg2, arg3);
-            // arg1, arg2, arg3
-            return arg1; // return what we want
+            tty_puts("syscall 1 (another test)");
         default:
             return ERR_FAILED;
     }

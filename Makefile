@@ -4,16 +4,16 @@ LD       = ld
 OBJCOPY  = objcopy
 
 GCCVER   = 15.1.0
-CFLAGS   = -B/usr/lib/gcc/i686-elf/$(GCCVER) -m32 -ffreestanding -nostdlib \
-           -fno-pie -fno-builtin -fno-stack-protector -O2 -Wall -Wextra -Wno-unused-parameter
+CFLAGS   = -B/usr/lib/gcc/i686-elf/$(GCCVER) -m32 -s -ffreestanding -nostdlib \
+           -fno-pie -fno-builtin -fno-stack-protector -O3 -Os -fomit-frame-pointer -fno-asynchronous-unwind-tables -fno-unwind-tables -fmerge-all-constants
 ASFLAGS  = -f elf
-LDFLAGS  = -m elf_i386 -Ttext 0x10000 -e _start
+LDFLAGS  = -m elf_i386 -Ttext 0x10000 -e _start --strip-all
 
-SRC_DIRS = kernel/core kernel/drivers kernel/lib kernel/mm kernel/fs kernel/exe kernel/int kernel/arch/x86
+SRC_DIRS = kernel/core kernel/drivers kernel/lib kernel/mm kernel/fs kernel/exe kernel/int kernel/sched
 BOOT_DIR = boot
 IMAGE    = floppy.img
 
-EXCLUDE_SRCS ?= kernel/drivers/tty_vtm.c
+EXCLUDE_SRCS ?= kernel/drivers/tty_vtm.c kernel/drivers/vga.c kernel/mm/paging.c
 
 C_SOURCES := $(filter-out $(EXCLUDE_SRCS),$(wildcard $(addsuffix /*.c,$(SRC_DIRS))))
 S_SOURCES := $(wildcard $(addsuffix /*.s,$(SRC_DIRS)))
@@ -28,27 +28,37 @@ all: $(IMAGE)
 	@echo "build complete"
 
 %.o: %.c
-	@echo "compile: $<"
+	@echo "CC: $<"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.c
+	@echo "CC: $<"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+%.o: %.S
+	@echo "CC: $<"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: %.s
-	@echo "assemble: $<"
-	@$(AS) $(ASFLAGS) $< -o $@
+	@echo "AS: $<"
+	@nasm -f elf32 $< -o $@
 
 boot.bin: $(BOOT_DIR)/boot.s
-	@echo "assemble boot: $<"
+	@echo "AS: $<"
 	@$(AS) -f bin $< -o $@
 
 kernel.elf: $(OBJS)
-	@echo "linking kernel.."
+	@echo "LD: kernel.elf"
 	@$(LD) $(LDFLAGS) -o $@ $(LINK_OBJS)
 
 kernel.bin: kernel.elf
-	@echo "objcopy kernel.."
+	@echo "STRIP: kernel.elf"
+	@strip kernel.elf
+	@echo "OBJCOPY: kernel.bin"
 	@$(OBJCOPY) -O binary $< $@
 
 $(IMAGE): boot.bin kernel.bin
-	@echo "creating padded floppy image.."
+	@echo "FINISH: floppy.img"
 	@cat $^ > $@
 	@truncate -s 1440k $@
 
