@@ -48,26 +48,22 @@ void task2() {
 
 
 static void task1(void) {
-    int n = 0;
-    for(;;) {
-        fbcstr(150, 300, "\b", 0x000000, FONT_BASIC8X8);
-        fbcstr(50, 300, "TASK 1 Counter:", 0xFFFFFF, FONT_BASIC8X8);
+    for(int n = 0; ; n = ++n % 10) {
+        fbcstr(SCREEN_WIDTH / 2, SCREEN_WIDTH / 2, "\b", 0x000000, FONT_BASIC8X8);
+        fbcstr(SCREEN_WIDTH / 2 - 16 * CHAR_W, SCREEN_WIDTH / 2, "TASK 1 Counter:", 0xFFFFFF, FONT_BASIC8X8);
         char str[2] = {'0' + n, 0};
-        fbcstr(150, 300, str, 0xFFFFFF, FONT_BASIC8X8);
-        n = (n + 1) % 10;
+        fbcstr(SCREEN_WIDTH / 2, SCREEN_WIDTH / 2, str, 0xFFFFFF, FONT_BASIC8X8);
         usleep(100);
         yield();
     }
 }
 
 static void task2(void) {
-    int n = 0;
-    for(;;) {
-        fbcstr(150,400, "\b", 0x000000, FONT_BASIC8X8);
-        fbcstr(50, 400, "TASK 2 Counter:", 0xFFFFFF, FONT_BASIC8X8);
+    for(int n = 0; ; n = ++n % 10) {
+        fbcstr(SCREEN_WIDTH / 2, SCREEN_WIDTH / 2, "\b", 0x000000, FONT_BASIC8X8);
+        fbcstr(SCREEN_WIDTH / 2 - 16 * CHAR_W, SCREEN_WIDTH / 2, "TASK 2 Counter:", 0xFFFFFF, FONT_BASIC8X8);
         char str[2] = {'0' + n, 0};
-        fbcstr(150,  400, str, 0xFFFFFF, FONT_BASIC8X8);
-        n = (n + 1) % 10;
+        fbcstr(SCREEN_WIDTH / 2,  SCREEN_WIDTH / 2, str, 0xFFFFFF, FONT_BASIC8X8);
         usleep(100);
         yield();
     }

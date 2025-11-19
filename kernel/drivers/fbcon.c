@@ -1,13 +1,14 @@
 #include "fb.h"
 #include "fbcon.h"
+#include "tty.h"
 #include <stddef.h>
 
 typedef struct {
     char ch;
-    const char *rows[8];
+    const char *rows[16];
 } fontentry_t;
 
-#include "fonts/basic8x8"
+#include "fonts/basic8x8.h"
 
 static const fontentry_t *font_get(char c, font_t font){
     switch(font){
@@ -22,9 +23,9 @@ static const fontentry_t *font_get(char c, font_t font){
 void fbcputchar(uint16_t px, uint16_t py, char c, uint32_t color, font_t font){
     const fontentry_t *f = font_get(c, font);
     if(!f) return;
-    for(u8 y = 0; y < 8; y++){
+    for(u8 y = 0; y < CHAR_H; y++){
         const char *r = f->rows[y];
-        for(u8 x = 0; x < 8; x++){
+        for(u8 x = 0; x < CHAR_W; x++){
             if(r[x] == '#') fb_putpixel(px + x, py + y, color);
         }
     }
@@ -32,8 +33,9 @@ void fbcputchar(uint16_t px, uint16_t py, char c, uint32_t color, font_t font){
 
 void fbcstr(uint16_t x, uint16_t y, const char *s, uint32_t color, font_t font){
     while(*s){
-        fbcputchar(x, y, *s, color, font);
-        x += 6;
+        if (*s == ' ') fbcputchar(x, y, *s, BGC, font);
+        else fbcputchar(x, y, *s, color, font);
+        x += 9;
         s++;
     }
 }
