@@ -14,14 +14,13 @@
 #include "../lib/math.h"
 #include "panic.h"
 #include "power.h"
+#include "../sched/sched.h"
 #define CMD_COMP(name) (strcmp(strtok(chars, " "), name) == 0)
 #define MAX_CAT_SIZE 8192  // Max file size for cat (8KB for now)
 
 extern struct kfs_superblock superblock;
 
 void sh(void) {
-    klog("sh: scheduler and elfs are not properly implemented yet. dropping into temporary shell.\n");
-    tty_puts("System44 Kernel Testing Environment\n\n");
     char chars[128];
     int i;
     static uint8_t cat_buffer[MAX_CAT_SIZE];  // Static buffer to avoid stack overflow
@@ -33,7 +32,7 @@ void sh(void) {
         while (1) {
             char c;
             if (!get_key(&c)) {
-                asm volatile("hlt");
+                yield();
                 continue;
             }
             if (c == '\b') {
@@ -53,6 +52,7 @@ void sh(void) {
                     break;
                 }
             }
+            yield();
         }
 
         if (CMD_COMP("version")) {

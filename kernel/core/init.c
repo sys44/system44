@@ -19,32 +19,60 @@ This is the first part of the kernel ran when the kernel actually starts executi
 #include "hwi.h"
 #include "../lib/time.h"
 #include "../fs/vfs.h"
+#include "panic.h"
+#include <stdint.h>
+#include <stdint.h>
+#include "../lib/memory.h"
+#include <stdint.h>
+#include "../sched/sched.h"
 
 
-void tirq0(void) {
-    /* Reduced to 10 for faster boot */
-    klog("running IRQ0 (timer) test.\n");
-    uint32_t last_tick = ticks;
-    while (ticks < 10) {
-        if (ticks != last_tick) {
-            last_tick = ticks;
-            klog("*\n");
-        }
+
+/*
+void task1() {
+  for(;;) {
+    tty_puts("Task1");
+    usleep(60);
+    yield();
+  }
+}
+
+void task2() {
+  for(;;) {
+    tty_puts("    Task2\n");
+    usleep(60);
+    yield();
+  }
+}
+*/
+
+
+static void task1(void) {
+    int n = 0;
+    for(;;) {
+        fbcstr(150, 300, "\b", 0x000000, FONT_BASIC8X8);
+        fbcstr(50, 300, "TASK 1 Counter:", 0xFFFFFF, FONT_BASIC8X8);
+        char str[2] = {'0' + n, 0};
+        fbcstr(150, 300, str, 0xFFFFFF, FONT_BASIC8X8);
+        n = (n + 1) % 10;
+        usleep(100);
+        yield();
     }
-    klog("10 ticks elapsed\n");
 }
 
-
-static inline uint32_t syscall3(uint32_t num, uint32_t arg1, uint32_t arg2, uint32_t arg3) {
-    uint32_t ret;
-    asm volatile(
-        "int $0x80"
-        : "=a"(ret)
-        : "a"(num), "b"(arg1), "c"(arg2), "d"(arg3)
-        : "memory"
-    );
-    return ret;
+static void task2(void) {
+    int n = 0;
+    for(;;) {
+        fbcstr(150,400, "\b", 0x000000, FONT_BASIC8X8);
+        fbcstr(50, 400, "TASK 2 Counter:", 0xFFFFFF, FONT_BASIC8X8);
+        char str[2] = {'0' + n, 0};
+        fbcstr(150,  400, str, 0xFFFFFF, FONT_BASIC8X8);
+        n = (n + 1) % 10;
+        usleep(100);
+        yield();
+    }
 }
+
 
 void kmain(unsigned char *vbe){
     tty_init(vbe);
@@ -61,10 +89,8 @@ void kmain(unsigned char *vbe){
     cpuident();
     mmp();
     pmm_init();
-
     struct pci_Out pcis[1024];
     pciEnumerate(pcis);
-
     for (size_t i = 0; i < 1024; i++) {
         if (pcis[i].pci.vendor != NULL) {
             klog("PCI ");
@@ -74,9 +100,13 @@ void kmain(unsigned char *vbe){
                 i, pcis[i].bus, pcis[i].dev, pcis[i].func, pcis[i].pci.vendor, pcis[i].pci.device);
         }
     }
-    file_t *f = vfs_l_open("/dev/tty");
-    vfs_l_write(f,"\n\nVFS Write test (to /dev/tty\nActually, /dev/tty doesn't exist. It's just a value open() checks for.\n\n", 128);
     kfs_mount();
-    sh();
-
+    sched_init();
+    task_l_spawn(task1);
+    //create_task(task2); slows the kernel dwwn beacuse of coopearative multitasking.
+    task_l_spawn(sh);
+    m_scheduler();
+    panic("scheduler has given up");
 }
+
+
