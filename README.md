@@ -1,8 +1,29 @@
-# system44
+<p align="center"> <img width="640" height="320" alt="image" src="https://github.com/user-attachments/assets/f0e34b6f-ebc2-4021-a1d0-11c637ee89e3" /> </p>
 
-A lightweight operating system built for simplicity and efficiency.
+<br/>
 
-![screenshot of system44](https://media.discordapp.net/attachments/1430169292460134443/1442457314471837706/image.png?ex=6925808f&is=69242f0f&hm=8094cba022ef80f577315ddd5be270849da1806d46d111de4e14add0b983fd8b&=&format=webp&quality=lossless)
+<p align="center">
+  A lightweight operating system built for simplicity and efficiency.
+</p>
+
+<br/>
+
+#  **system44** 
+
+<a href="https://github.com/sys44/system44/blob/main/license">
+  <img src="https://img.shields.io/github/license/sys44/system44">
+</a>
+<a href="https://github.com/sys44/system44/issues">
+  <img src="https://img.shields.io/github/issues/sys44/system44">
+</a>
+
+
+# Screenshot
+<p align="center">
+<img src="https://media.discordapp.net/attachments/1430169292460134443/1442457314471837706/image.png?ex=6925808f&is=69242f0f&hm=8094cba022ef80f577315ddd5be270849da1806d46d111de4e14add0b983fd8b&=&format=webp&quality=lossless" />
+<br>
+system44 running in QEMU
+</p>
 
 
 ## Contributors 
