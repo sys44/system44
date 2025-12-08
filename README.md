@@ -20,7 +20,7 @@
 
 # Screenshot
 <p align="center">
-<img src="**https://media.discordapp.net/attachments/1430169292460134443/1442457314471837706/image.png?ex=6925808f&is=69242f0f&hm=8094cba022ef80f577315ddd5be270849da1806d46d111de4e14add0b983fd8b&=&format=webp&quality=lossless**" />
+<img src="https://i.imgur.com/ThRpHbs.png" />
 <br>
 system44 running in QEMU
 </p>
