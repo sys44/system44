@@ -1,4 +1,4 @@
-<p align="center"> <img width="640" height="320" alt="image" src="https://media.discordapp.net/attachments/1430169292460134443/1442457314471837706/image.png?ex=6937f58f&is=6936a40f&hm=2a3883d1957d6bb19012bb4b7376f941e4043b9ea24bece7e103d35513101c1b&=&format=webp&quality=lossless" /> </p>
+<p align="center"> <img width="640" height="320" alt="image" src="https://repository-images.githubusercontent.com/1066524277/aec57a88-43ab-4261-ac8b-3290126505c4" /> </p>
 
 <br/>
 
