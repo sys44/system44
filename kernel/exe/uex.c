@@ -37,7 +37,7 @@ int uexExec(const char* name, void** entry, struct uexAlloc* alloc) {
     uint8_t* dest = (uint8_t*)hdr.loadAddr;
     uint32_t pages = (hdr.memSize + 4095) / 4096;
     if (!dest) {
-        dest = pmm_alloc_pages(pages);
+        dest = pmm_alloc(pages);
         if (!dest) return ERR_OOM;
         if (alloc) {
             alloc->base = dest;

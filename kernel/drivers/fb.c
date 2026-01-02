@@ -70,10 +70,10 @@ int fblogo(const char* filename, int start_x, int start_y) {
     int row_size = (w * 3 + 3) & ~3;
     size_t img_size = (size_t)row_size * h;
     uint32_t pages = (img_size + 4095) / 4096;
-    uint8_t* img_buf = (uint8_t*)pmm_alloc_pages(pages);
+    uint8_t* img_buf = (uint8_t*)pmm_alloc(pages);
     if(!img_buf) return -6;
     if(kfsExtension0(f, fh.bfOffBits, img_buf, img_size) < 0) {
-        pmm_free_pages(img_buf, pages);
+        pmm_free(img_buf, pages);
         return -5;
     }
     uint8_t* dst = fb.addr + start_y * fb.pitch + start_x * 3;
@@ -91,7 +91,7 @@ int fblogo(const char* filename, int start_x, int start_y) {
             *d++ = *s++;
         }
     }
-    pmm_free_pages(img_buf, pages);
+    pmm_free(img_buf, pages);
     return 0;
 }
 

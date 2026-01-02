@@ -9,7 +9,7 @@ int exec (const char *file) {
         void (*prog)() = (void (*)())entry;
         prog();
         if (alloc.base) {
-            pmm_free_pages(alloc.base, alloc.pages);
+            pmm_free(alloc.base, alloc.pages);
         }
     } else {
         return ERR_FORMAT;
@@ -24,7 +24,7 @@ int execv (const char *file, char *const argv[]) {
         void (*prog)(char *const *) = (void (*)(char *const *))entry;
         prog(argv);
         if (alloc.base) {
-            pmm_free_pages(alloc.base, alloc.pages);
+            pmm_free(alloc.base, alloc.pages);
         }
     } else {
         return ERR_FORMAT;
